@@ -7,10 +7,11 @@ repo : velog.io/@broccolism/GetX-Pattern-을-적용한-플러터-폴더-구조
 lib
   - binding     각 스크린별 필요한 의존성 주입
   - controller  상태관리
-  - model       데이터 타입 정의
-  - provider    서버 api, 로컬 DB api 등 호출
-  - repository  응답으로 받은 데이터 가공
-  - src         상수값 정의
+  - data
+    - model       데이터 타입 정의
+    - provider    서버 api, 로컬 DB api 등 호출
+    - repository  응답으로 받은 데이터 가공
+   - src         상수값 정의
   - util        편의성 함수 정의
   - view        화면에 보이는 UI 모음
     - common        공통 컴포넌트 위젯 모음

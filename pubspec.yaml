@@ -35,7 +35,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   get: ^4.6.6
-
+  flutter_screenutil: ^5.9.0
+  auto_size_text: ^3.0.0
+  cached_network_image: ^3.3.0
+  lottie: ^2.7.0
+  video_player: ^2.8.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -57,7 +61,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+    - assets/lottie/wallpaperlottie.json
+    - assets/video/wallpaper.mp4
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
