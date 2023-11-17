@@ -10,6 +10,8 @@ class AppPages {
     GetPage(
         name: Routes.INITIAL,
         page: () => SplashScreen(),
-        binding: SplashBinding())
+        binding: SplashBinding()),
+    GetPage(
+        name: Routes.HOME, page: () => HomeScreen(), binding: CountBinding()),
   ];
 }
