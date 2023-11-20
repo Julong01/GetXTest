@@ -44,7 +44,7 @@ class SplashScreen extends GetView<SplashController> {
                           letterSpacing: 5,
                           fontWeight: FontWeight.w300),
                     ),
-                    onPressed: () => controller.toHome()))
+                    onPressed: () async => await controller.toHome()))
           ],
         ));
   }

@@ -21,7 +21,8 @@ class SplashController extends GetxController {
     super.onClose();
   }
 
-  toHome() {
+  toHome() async {
+    await _video.value.pause();
     Get.offNamed("/main");
   }
 }
