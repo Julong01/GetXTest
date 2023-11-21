@@ -1,10 +1,12 @@
 import 'package:auction/router.dart';
 import 'package:auction/view/sreens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   await ScreenUtil.ensureScreenSize();
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,

@@ -1,7 +1,7 @@
-import 'package:auction/binding/count_binding.dart';
+import 'package:auction/binding/home_binding.dart';
 import 'package:auction/binding/splash_binding.dart';
 import 'package:auction/router.dart';
-import 'package:auction/view/Home/home_screen.dart';
+import 'package:auction/view/home/home_screen.dart';
 import 'package:auction/view/splash/splash_screen.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +12,6 @@ class AppPages {
         page: () => SplashScreen(),
         binding: SplashBinding()),
     GetPage(
-        name: Routes.HOME, page: () => HomeScreen(), binding: CountBinding()),
+        name: Routes.HOME, page: () => HomeScreen(), binding: HomeBinding()),
   ];
 }

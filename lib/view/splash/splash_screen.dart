@@ -1,4 +1,4 @@
-import 'package:auction/controller/splash_controller.dart';
+import 'package:auction/controller/splash/splash_controller.dart';
 import 'package:auction/view/common/auto_text.dart';
 import 'package:auction/view/common/stack_child.dart';
 import 'package:flutter/material.dart';

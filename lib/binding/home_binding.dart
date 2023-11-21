@@ -1,4 +1,4 @@
-import 'package:auction/controller/home_controller.dart';
+import 'package:auction/controller/home/home_controller.dart';
 import 'package:auction/data/provider/api.dart';
 import 'package:auction/data/repository/news_repository.dart';
 import 'package:dio/dio.dart';

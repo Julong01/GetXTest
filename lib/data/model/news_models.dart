@@ -1,20 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-
 part 'news_models.g.dart';
 
 @JsonSerializable()
-class Notice_Response {
-  List<Notice> data;
-
-  Notice_Response({required this.data});
-
-  factory Notice_Response.fromJson(Map<String, dynamic> json) =>
-      _$Notice_ResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$Notice_ResponseToJson(this);
-}
-
-@JsonSerializable()
-class Notice {
+class NoticeData {
   @JsonKey(name: "Title")
   final String title;
   @JsonKey(name: "Date")
@@ -24,29 +12,19 @@ class Notice {
   @JsonKey(name: "Type")
   final String type;
 
-  Notice(
+  NoticeData(
       {required this.title,
       required this.date,
       required this.link,
       required this.type});
 
-  factory Notice.fromJson(Map<String, dynamic> json) => _$NoticeFromJson(json);
-  Map<String, dynamic> toJson() => _$NoticeToJson(this);
+  factory NoticeData.fromJson(Map<String, dynamic> json) =>
+      _$NoticeDataFromJson(json);
+  Map<String, dynamic> toJson() => _$NoticeDataToJson(this);
 }
 
 @JsonSerializable()
-class Events_Response {
-  List<Events> data;
-
-  Events_Response({required this.data});
-
-  factory Events_Response.fromJson(Map<String, dynamic> json) =>
-      _$Events_ResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$Events_ResponseToJson(this);
-}
-
-@JsonSerializable()
-class Events {
+class EventData {
   @JsonKey(name: "Title")
   final String title;
   @JsonKey(name: "Thumbnail")
@@ -60,7 +38,7 @@ class Events {
   @JsonKey(name: "RewardDate")
   final DateTime? rewardDate;
 
-  Events({
+  EventData({
     required this.title,
     required this.thumbnail,
     required this.link,
@@ -69,6 +47,7 @@ class Events {
     this.rewardDate,
   });
 
-  factory Events.fromJson(Map<String, dynamic> json) => _$EventsFromJson(json);
-  Map<String, dynamic> toJson() => _$EventsToJson(this);
+  factory EventData.fromJson(Map<String, dynamic> json) =>
+      _$EventDataFromJson(json);
+  Map<String, dynamic> toJson() => _$EventDataToJson(this);
 }

@@ -25,6 +25,11 @@ lib
 서버 -> view 데이터 흐름
   provider -> repository -> controller -> view
 
+23.11.21)
+- apikey .env에 추가
+ - open api 통신 o
+ - home_screen 공지사항 controller, view, repository  테스트 스크린 o
+
 A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)

@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' hide Headers;
+import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../model/news_models.dart';
@@ -10,16 +10,8 @@ abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
   @GET("/news/notices")
-  @Headers(<String, dynamic>{
-    'Content-Type': 'application/json',
-    'Authorization': 'bearer aaaaaa'
-  })
-  Future<Notice_Response> getNotices();
+  Future<List<NoticeData>> getNotices(@Header("authorization") String key);
 
   @GET("/news/events")
-  @Headers(<String, dynamic>{
-    'Content-Type': 'application/json',
-    'Authorization': 'bearer aaaaaa'
-  })
-  Future<Events_Response> getEvents();
+  Future<List<EventData>> getEvents(@Header("authorization") String key);
 }

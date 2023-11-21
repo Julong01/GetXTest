@@ -44,6 +44,9 @@ dependencies:
   retrofit: ">=4.0.0 <5.0.0"
   json_annotation: ^4.8.1
   dio: ^5.3.3
+  flutter_dotenv: ^5.1.0
+  carousel_slider: ^4.2.1
+  url_launcher: ^6.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +73,7 @@ flutter:
   assets:
     - assets/lottie/wallpaperlottie.json
     - assets/video/wallpaper.mp4
+    - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

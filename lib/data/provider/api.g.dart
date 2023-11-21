@@ -21,21 +21,17 @@ class _ApiClient implements ApiClient {
   String? baseUrl;
 
   @override
-  Future<Notice_Response> getNotices() async {
+  Future<List<NoticeData>> getNotices(String key) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{
-      r'Content-Type': 'application/json',
-      r'Authorization': 'bearer aaaaaa',
-    };
+    final _headers = <String, dynamic>{r'authorization': key};
     _headers.removeWhere((k, v) => v == null);
     final Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<Notice_Response>(Options(
+        .fetch<List<dynamic>>(_setStreamType<List<NoticeData>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
-      contentType: 'application/json',
     )
             .compose(
               _dio.options,
@@ -48,26 +44,24 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = Notice_Response.fromJson(_result.data!);
+    var value = _result.data!
+        .map((dynamic i) => NoticeData.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
   @override
-  Future<Events_Response> getEvents() async {
+  Future<List<EventData>> getEvents(String key) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{
-      r'Content-Type': 'application/json',
-      r'Authorization': 'bearer aaaaaa',
-    };
+    final _headers = <String, dynamic>{r'authorization': key};
     _headers.removeWhere((k, v) => v == null);
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<Events_Response>(Options(
+    final _result =
+        await _dio.fetch<List<dynamic>>(_setStreamType<List<EventData>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
-      contentType: 'application/json',
     )
             .compose(
               _dio.options,
@@ -80,7 +74,9 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = Events_Response.fromJson(_result.data!);
+    var value = _result.data!
+        .map((dynamic i) => EventData.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
