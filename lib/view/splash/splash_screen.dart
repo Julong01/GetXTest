@@ -25,26 +25,55 @@ class SplashScreen extends GetView<SplashController> {
                     aspectRatio: controller.video.value.aspectRatio,
                     child: VideoPlayer(controller.video)))),
             StackChild(
-                start: 120,
-                end: 120,
-                height: 70,
+                start: 40,
+                end: 40,
+                height: 50,
                 bottom: 100.h,
-                builder: (_) => OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(0, 0, 0, 0.3),
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5))),
-                    child: AutoText(
-                      text: 'START',
-                      fontSizeSp: 28,
-                      style: const TextStyle(
-                          fontSize: 28,
-                          color: Colors.white,
-                          letterSpacing: 5,
-                          fontWeight: FontWeight.w300),
-                    ),
-                    onPressed: () async => await controller.toHome()))
+                builder: (_) => Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Obx(() => TextField(
+                                controller: controller.character,
+                                cursorColor: Colors.white,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: "캐릭터 명",
+                                    hintStyle:
+                                        TextStyle(color: Color(0xffdddddd)),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xffeeeeee)),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white))),
+                              )),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromRGBO(0, 0, 0, 0.3),
+                                side: const BorderSide(color: Colors.white),
+                                fixedSize: const Size(50, 50),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5))),
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 25,
+                            ),
+                            onPressed: () async => await controller.toHome())
+                      ],
+                    ))
           ],
         ));
   }

@@ -27,8 +27,17 @@ lib
 
 23.11.21)
 - apikey .env에 추가
- - open api 통신 o
- - home_screen 공지사항 controller, view, repository  테스트 스크린 o
+- open api 통신 test
+- home_screen 공지사항 controller, view, repository  테스트 스크린 o
+
+23.11.22)
+- splash_screen
+ - 진입시 캐릭터명 입력란 추가
+ - 캐릭터 요약 정보 가져온 후 arguments로 넘겨주기
+- home_screen
+ - 공지사항 테이블 크기 조정
+ - 진행중인 이벤트 carousel slider 추가
+ - 캐릭터 요약 정보 표현 profile_box 추가
 
 A few resources to get you started if this is your first Flutter project:
 

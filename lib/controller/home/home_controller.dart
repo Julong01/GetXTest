@@ -1,5 +1,6 @@
 import 'package:auction/data/model/news_models.dart';
 import 'package:auction/data/repository/news_repository.dart';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:get/get.dart';
 
 import 'home_model.dart';
@@ -9,10 +10,8 @@ class HomeController extends GetxController {
   HomeController({required this.repository});
 
   final RxList<Notice> _notices = <Notice>[].obs;
-  List<Notice> get notices => _notices;
-
-  final List<Event> _events = <Event>[].obs;
-  List<Event> get events => _events;
+  final RxList<Event> _events = <Event>[].obs;
+  final Rx<CarouselController> _carousel = CarouselController().obs;
 
   @override
   void onInit() {
@@ -35,4 +34,8 @@ class HomeController extends GetxController {
       _events.add(Event(e));
     }
   }
+
+  CarouselController get carousel => _carousel.value;
+  List<Notice> get notices => _notices;
+  List<Event> get events => _events;
 }
