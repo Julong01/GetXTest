@@ -1,5 +1,5 @@
-import 'package:auction/data/model/news_models.dart';
-import 'package:auction/data/repository/news_repository.dart';
+import 'package:auction/data/model/z_models.dart';
+import 'package:auction/data/repository/z_repository.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:get/get.dart';
 

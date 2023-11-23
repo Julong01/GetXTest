@@ -1,17 +1,12 @@
-import 'package:auction/controller/home/home_controller.dart';
-import 'package:auction/data/model/character_summary_models.dart';
 import 'package:auction/util/util_method.dart';
-import 'package:auction/view/common/auto_text.dart';
-import 'package:auction/view/common/image_widget.dart';
-import 'package:auction/view/common/section.dart';
-import 'package:auction/view/common/stack_child.dart';
+import 'package:auction/controller/controllers.dart';
+import 'package:auction/data/model/z_models.dart';
+import 'package:auction/view/widgets.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import '../../controller/home/home_model.dart';
 
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({super.key});
@@ -21,27 +16,70 @@ class HomeScreen extends GetView<HomeController> {
     return SafeArea(
         child: Scaffold(
             body: Center(
+                child: SingleChildScrollView(
       child: Column(
         children: [
           Section(
             designSize: const Size(360, 296),
             color: const Color.fromRGBO(21, 24, 29, 1),
+            relativePadding: const EdgeInsets.all(15).copyWith(bottom: 0),
             builder: (_, __, ___) => [
               StackChild(
-                  top: 15,
-                  start: 15,
-                  bottom: 15,
-                  end: 100,
+                  top: 0,
+                  start: 20,
+                  height: 25,
+                  builder: (_) => AutoText(
+                        text: (Get.arguments["characterSummary"]
+                                as CharacterSummaryData)
+                            .characterName,
+                        fontSizeSp: 20,
+                        style: const TextStyle(color: Colors.white),
+                      )),
+              StackChild(
+                  top: 25,
+                  start: 0,
+                  bottom: 0,
+                  end: 40,
                   builder: (_) => _buildProfileBox(_))
             ],
           ),
           Section(
+            designSize: const Size(360, 200),
+            relativePadding: const EdgeInsets.symmetric(vertical: 15),
+            builder: (_, __, ___) => [
+              Obx(
+                () => CarouselSlider(
+                    carouselController: controller.carousel,
+                    items: controller.events.map((event) {
+                      return InkWell(
+                        onTap: () async => Util.launchUrlLostArc(event.link),
+                        child: ImageWidget(
+                            imageUrl: event.thumbnail,
+                            width: __.maxWidth,
+                            radius: 0,
+                            height: __.maxHeight),
+                      );
+                    }).toList(),
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 21 / 9,
+                        viewportFraction: 1,
+                        height: __.maxHeight,
+                        scrollDirection: Axis.horizontal,
+                        autoPlayAnimationDuration: const Duration(seconds: 5),
+                        autoPlayInterval: const Duration(seconds: 5),
+                        onPageChanged: (index, reason) {})),
+              ),
+            ],
+          ),
+          Section(
             designSize: const Size(360, 204),
+            relativePadding: const EdgeInsets.all(10).copyWith(top: 0),
             builder: (_, __, ___) => [
               StackChild(
                   height: 20.h,
                   start: 12.w,
-                  top: 12.h,
+                  top: 0.h,
                   builder: (_) => AutoText(text: "공지사항", fontSizeSp: 12)),
               StackChild(
                   height: 184.h,
@@ -74,69 +112,100 @@ class HomeScreen extends GetView<HomeController> {
                             )))),
             ],
           ),
-          Section(
-            designSize: const Size(360, 200),
-            builder: (_, __, ___) => [
-              Obx(
-                () => CarouselSlider(
-                    carouselController: controller.carousel,
-                    items: controller.events.map((event) {
-                      return InkWell(
-                        onTap: () async => Util.launchUrlLostArc(event.link),
-                        child: ImageWidget(
-                            imageUrl: event.thumbnail,
-                            width: __.maxWidth,
-                            radius: 0,
-                            height: __.maxHeight),
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        aspectRatio: 21 / 9,
-                        viewportFraction: 1,
-                        height: __.maxHeight,
-                        scrollDirection: Axis.horizontal,
-                        autoPlayAnimationDuration: const Duration(seconds: 5),
-                        autoPlayInterval: const Duration(seconds: 5),
-                        onPageChanged: (index, reason) {})),
-              ),
-            ],
-          ),
         ],
       ),
-    )));
+    ))));
   }
 
   Widget _buildProfileBox(BoxConstraints constraints) {
     CharacterSummaryData data = Get.arguments["characterSummary"];
-    TextStyle ts = const TextStyle(color: Colors.white);
 
     return Card(
-        elevation: 1,
-        color: const Color.fromRGBO(21, 24, 29, 1),
-        child: Row(
-          children: [
-            ImageWidget(
-                imageUrl: data.characterImage,
-                width: constraints.maxWidth / 2,
-                height: constraints.maxHeight),
-            Expanded(
-                child: Column(
+      elevation: 1,
+      color: const Color.fromRGBO(21, 24, 29, 1),
+      child: Row(
+        children: [
+          ImageWidget(
+              imageUrl: data.characterImage,
+              width: constraints.maxWidth / 2,
+              height: constraints.maxHeight - 34),
+          const SizedBox(
+            width: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(data.serverName, style: ts),
-                Text(data.guildName ?? "-", style: ts),
-                Text(data.characterClassName, style: ts),
-                Text(data.title ?? "-", style: ts),
-                Text(data.characterLevel.toString(), style: ts),
-                Text(data.itemAvgLevel, style: ts),
-                Text(data.expeditionLevel.toString(), style: ts),
-                Text(data.pvpGradeName, style: ts),
-                Text("Lv.${data.townLevel} ${data.townName}", style: ts),
+                _buildInfo("서 버", data.serverName),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("길 드", data.guildName ?? "-"),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("클래스", data.characterClassName),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("칭 호", data.title ?? "-"),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("전 투", data.characterLevel.toString()),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("아이템", data.itemAvgLevel),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("원정대", data.expeditionLevel.toString()),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("PVP", data.pvpGradeName),
+                const SizedBox(
+                  height: 3,
+                ),
+                _buildInfo("영 지", "Lv.${data.townLevel} ${data.townName}"),
               ],
-            ))
-          ],
-        ));
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfo(String title, String text) {
+    TextStyle ts = const TextStyle(color: Colors.white);
+    return Expanded(
+        child: Row(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+              color: Color.fromRGBO(51, 52, 53, 1),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          width: 50,
+          padding: const EdgeInsets.all(4),
+          child: AutoText(
+            text: title,
+            fontSizeSp: 14,
+            style: ts,
+          ),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        AutoText(
+          text: text,
+          fontSizeSp: 12,
+          style: ts,
+        )
+      ],
+    ));
   }
 }
 

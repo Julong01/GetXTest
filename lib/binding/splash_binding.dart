@@ -1,5 +1,6 @@
-import 'package:auction/controller/splash/splash_controller.dart';
-import 'package:dio/dio.dart';
+import 'package:auction/controller/controllers.dart';
+import 'package:auction/data/custom_dio/dio_client.dart';
+import 'package:auction/data/repository/z_repository.dart';
 import 'package:get/get.dart';
 
 import '../data/provider/api.dart';
@@ -11,7 +12,8 @@ class SplashBinding extends Bindings {
     // TODO: implement dependencies
     Get.lazyPut<SplashController>(() {
       return SplashController(
-          repository: CharacterRepository(apiClient: ApiClient(Dio())));
+          repository:
+              CharacterRepository(apiClient: ApiClient(CustomDio().dio)));
     });
   }
 }

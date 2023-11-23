@@ -1,8 +1,6 @@
-import 'package:auction/binding/home_binding.dart';
-import 'package:auction/binding/splash_binding.dart';
-import 'package:auction/router.dart';
-import 'package:auction/view/home/home_screen.dart';
-import 'package:auction/view/splash/splash_screen.dart';
+import 'package:auction/binding/bindings.dart';
+import 'package:auction/routers/router.dart';
+import 'package:auction/view/screens.dart';
 import 'package:get/get.dart';
 
 class AppPages {

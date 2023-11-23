@@ -1,8 +1,6 @@
-import 'package:auction/controller/splash/splash_controller.dart';
-import 'package:auction/view/common/auto_text.dart';
-import 'package:auction/view/common/stack_child.dart';
+import 'package:auction/controller/controllers.dart';
+import 'package:auction/view/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';

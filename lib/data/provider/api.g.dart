@@ -21,11 +21,10 @@ class _ApiClient implements ApiClient {
   String? baseUrl;
 
   @override
-  Future<List<NoticeData>> getNotices(String key) async {
+  Future<List<NoticeData>> getNotices() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'authorization': key};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<List<dynamic>>(_setStreamType<List<NoticeData>>(Options(
@@ -51,11 +50,10 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<List<EventData>> getEvents(String key) async {
+  Future<List<EventData>> getEvents() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'authorization': key};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result =
         await _dio.fetch<List<dynamic>>(_setStreamType<List<EventData>>(Options(
@@ -81,14 +79,10 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<CharacterSummaryData> getProfileSummary(
-    String key,
-    String characterName,
-  ) async {
+  Future<CharacterSummaryData> getProfileSummary(String characterName) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'authorization': key};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CharacterSummaryData>(Options(

@@ -1,4 +1,4 @@
-import 'package:auction/data/model/news_models.dart';
+import 'package:auction/data/model/z_models.dart';
 
 class Notice {
   final String title;

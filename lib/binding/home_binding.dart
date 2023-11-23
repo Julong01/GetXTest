@@ -1,7 +1,7 @@
-import 'package:auction/controller/home/home_controller.dart';
+import 'package:auction/controller/controllers.dart';
+import 'package:auction/data/custom_dio/dio_client.dart';
+import 'package:auction/data/repository/z_repository.dart';
 import 'package:auction/data/provider/api.dart';
-import 'package:auction/data/repository/news_repository.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 class HomeBinding extends Bindings {
@@ -10,7 +10,7 @@ class HomeBinding extends Bindings {
     // TODO: implement dependencies
     Get.lazyPut<HomeController>(() {
       return HomeController(
-          repository: NewsRepository(apiClient: ApiClient(Dio())));
+          repository: NewsRepository(apiClient: ApiClient(CustomDio().dio)));
     });
   }
 }

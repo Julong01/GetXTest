@@ -1,5 +1,7 @@
-import 'package:auction/router.dart';
-import 'package:auction/view/sreens.dart';
+import 'package:auction/data/custom_dio/dio_client.dart';
+import 'package:auction/routers/router.dart';
+import 'package:auction/routers/router_screens.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +10,7 @@ import 'package:get/get.dart';
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await ScreenUtil.ensureScreenSize();
+  CustomDio();
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: Routes.INITIAL,
