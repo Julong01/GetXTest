@@ -2,6 +2,7 @@ import 'package:auction/data/model/z_models.dart';
 import 'package:auction/data/repository/z_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashController extends GetxController {
@@ -11,11 +12,14 @@ class SplashController extends GetxController {
   final Rx<VideoPlayerController> _video =
       VideoPlayerController.asset("assets/video/wallpaper.mp4").obs;
   final Rx<TextEditingController> _character =
-      TextEditingController(text: "초록색감").obs;
+      TextEditingController(text: "").obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
+    if (Hive.box("name").get("character") != null) {
+      _character.value.text = Hive.box("name").get("character");
+    }
     _video.value.initialize().then((value) => update());
     _video.value.setLooping(true);
     _video.value.play();
@@ -34,6 +38,12 @@ class SplashController extends GetxController {
       CharacterSummaryData data =
           await repository.getProfileSummary(character.text);
       await _video.value.pause();
+      if (Hive.box("name").get("character") == null) {
+        Hive.box("name").put("character", character.text);
+      } else {
+        Hive.box("name").putAt(0, character.text);
+      }
+
       Get.offNamed("/main", arguments: {"characterSummary": data});
     } on TypeError catch (e) {
       Get.defaultDialog(

@@ -1,13 +1,17 @@
 import 'package:auction/data/custom_dio/dio_client.dart';
 import 'package:auction/routers/router.dart';
 import 'package:auction/routers/router_screens.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Hive.init((await getApplicationDocumentsDirectory()).path);
+  await Hive.openBox("name");
   await dotenv.load(fileName: ".env");
   await ScreenUtil.ensureScreenSize();
   CustomDio();

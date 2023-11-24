@@ -35,6 +35,10 @@ class HomeController extends GetxController {
     }
   }
 
+  toSplash() {
+    Get.offAllNamed("/");
+  }
+
   CarouselController get carousel => _carousel.value;
   List<Notice> get notices => _notices;
   List<Event> get events => _events;

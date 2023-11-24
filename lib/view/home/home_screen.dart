@@ -7,6 +7,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({super.key});
@@ -36,10 +37,12 @@ class HomeScreen extends GetView<HomeController> {
                         style: const TextStyle(color: Colors.white),
                       )),
               StackChild(
+                  top: 0, end: 20, height: 28, builder: (_) => _buildButtons()),
+              StackChild(
                   top: 25,
                   start: 0,
                   bottom: 0,
-                  end: 40,
+                  end: 0,
                   builder: (_) => _buildProfileBox(_))
             ],
           ),
@@ -127,7 +130,7 @@ class HomeScreen extends GetView<HomeController> {
         children: [
           ImageWidget(
               imageUrl: data.characterImage,
-              width: constraints.maxWidth / 2,
+              width: constraints.maxWidth / 2.5,
               height: constraints.maxHeight - 34),
           const SizedBox(
             width: 10,
@@ -180,7 +183,8 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildInfo(String title, String text) {
-    TextStyle ts = const TextStyle(color: Colors.white);
+    double spacing = title == "PVP" ? 8 : (!title.contains(" ") ? 2 : 6);
+    TextStyle ts = TextStyle(color: Colors.white, letterSpacing: spacing);
     return Expanded(
         child: Row(
       children: [
@@ -188,8 +192,8 @@ class HomeScreen extends GetView<HomeController> {
           decoration: const BoxDecoration(
               color: Color.fromRGBO(51, 52, 53, 1),
               borderRadius: BorderRadius.all(Radius.circular(10))),
-          width: 50,
-          padding: const EdgeInsets.all(4),
+          width: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: AutoText(
             text: title,
             fontSizeSp: 14,
@@ -197,15 +201,80 @@ class HomeScreen extends GetView<HomeController> {
           ),
         ),
         const SizedBox(
-          width: 4,
+          width: 5,
         ),
         AutoText(
           text: text,
-          fontSizeSp: 12,
-          style: ts,
+          fontSizeSp: 13,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         )
       ],
     ));
+  }
+
+  Widget _buildButtons() {
+    HomeController controller = Get.find();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: const BorderRadius.all(Radius.circular(4))),
+          child: IconButton(
+            onPressed: () {},
+            iconSize: 15,
+            padding: const EdgeInsets.all(0),
+            icon: const Icon(
+              Icons.group,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: const BorderRadius.all(Radius.circular(4))),
+          child: IconButton(
+            onPressed: () {},
+            iconSize: 15,
+            padding: const EdgeInsets.all(0),
+            icon: const Icon(
+              Icons.storefront,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: const BorderRadius.all(Radius.circular(4))),
+          child: IconButton(
+            onPressed: () => controller.toSplash(),
+            iconSize: 15,
+            padding: const EdgeInsets.all(0),
+            icon: const Icon(
+              Icons.door_back_door_outlined,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
