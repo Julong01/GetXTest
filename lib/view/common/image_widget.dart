@@ -45,7 +45,7 @@ class ImageWidget extends StatelessWidget {
       Function? onTabVoid,
       Color? color,
       bool? useColor,
-      BoxFit fit = BoxFit.cover})
+      BoxFit fit = BoxFit.fill})
       : _imageUrl = imageUrl,
         _fit = fit,
         _onTap = onTap,

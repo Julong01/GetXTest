@@ -1,3 +1,4 @@
+import 'package:auction/src/constants.dart';
 import 'package:auction/util/util_method.dart';
 import 'package:auction/controller/controllers.dart';
 import 'package:auction/data/model/z_models.dart';
@@ -23,16 +24,14 @@ class HomeScreen extends GetView<HomeController> {
           Section(
             designSize: const Size(360, 296),
             color: const Color.fromRGBO(21, 24, 29, 1),
-            relativePadding: const EdgeInsets.all(15).copyWith(bottom: 0),
+            relativePadding: const EdgeInsets.all(10).copyWith(bottom: 0),
             builder: (_, __, ___) => [
               StackChild(
                   top: 0,
                   start: 20,
                   height: 25,
                   builder: (_) => AutoText(
-                        text: (Get.arguments["characterSummary"]
-                                as CharacterSummaryData)
-                            .characterName,
+                        text: (Get.find<HomeController>().data.characterName),
                         fontSizeSp: 20,
                         style: const TextStyle(color: Colors.white),
                       )),
@@ -121,7 +120,7 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildProfileBox(BoxConstraints constraints) {
-    CharacterSummaryData data = Get.arguments["characterSummary"];
+    CharacterSummaryData data = Get.find<HomeController>().data;
 
     return Card(
       elevation: 1,
@@ -129,7 +128,8 @@ class HomeScreen extends GetView<HomeController> {
       child: Row(
         children: [
           ImageWidget(
-              imageUrl: data.characterImage,
+              imageUrl:
+                  data.characterImage ?? pathToClass(data.characterClassName),
               width: constraints.maxWidth / 2.5,
               height: constraints.maxHeight - 34),
           const SizedBox(
@@ -226,7 +226,7 @@ class HomeScreen extends GetView<HomeController> {
               border: Border.all(color: Colors.white),
               borderRadius: const BorderRadius.all(Radius.circular(4))),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () => controller.toInfo(),
             iconSize: 15,
             padding: const EdgeInsets.all(0),
             icon: const Icon(
@@ -268,7 +268,7 @@ class HomeScreen extends GetView<HomeController> {
             iconSize: 15,
             padding: const EdgeInsets.all(0),
             icon: const Icon(
-              Icons.door_back_door_outlined,
+              Icons.undo_sharp,
               color: Colors.white,
             ),
           ),

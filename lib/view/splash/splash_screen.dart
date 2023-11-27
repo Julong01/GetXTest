@@ -63,7 +63,8 @@ class SplashScreen extends GetView<SplashController> {
                                 side: const BorderSide(color: Colors.white),
                                 fixedSize: const Size(50, 50),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5))),
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding: const EdgeInsets.all(0)),
                             child: const Icon(
                               Icons.arrow_forward,
                               color: Colors.white,

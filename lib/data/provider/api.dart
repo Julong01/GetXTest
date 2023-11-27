@@ -13,6 +13,10 @@ abstract class ApiClient {
   @GET("/news/events")
   Future<List<EventData>> getEvents();
 
+  @GET("/characters/{characterName}/siblings")
+  Future<List<SiblingsData>> getSiblings(
+      @Path("characterName") String characterName);
+
   @GET("/armories/characters/{characterName}/profiles")
   Future<CharacterSummaryData> getProfileSummary(
       @Path("characterName") String characterName);

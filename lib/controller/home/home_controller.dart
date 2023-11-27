@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   final RxList<Notice> _notices = <Notice>[].obs;
   final RxList<Event> _events = <Event>[].obs;
   final Rx<CarouselController> _carousel = CarouselController().obs;
+  final CharacterSummaryData data = Get.arguments["characterSummary"];
 
   @override
   void onInit() {
@@ -37,6 +38,14 @@ class HomeController extends GetxController {
 
   toSplash() {
     Get.offAllNamed("/");
+  }
+
+  toInfo() async {
+    List<SiblingsData> list = await repository.getSiblings(
+        (Get.arguments["characterSummary"] as CharacterSummaryData)
+            .characterName);
+    list.sort((a, b) => b.itemAvgLevel.compareTo(a.itemAvgLevel));
+    Get.toNamed("/info", arguments: {"siblings": list});
   }
 
   CarouselController get carousel => _carousel.value;

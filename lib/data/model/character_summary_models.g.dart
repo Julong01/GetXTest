@@ -9,7 +9,7 @@ part of 'character_summary_models.dart';
 CharacterSummaryData _$CharacterSummaryDataFromJson(
         Map<String, dynamic> json) =>
     CharacterSummaryData(
-      characterImage: json['CharacterImage'] as String,
+      characterImage: json['CharacterImage'] as String?,
       expeditionLevel: json['ExpeditionLevel'] as int,
       pvpGradeName: json['PvpGradeName'] as String,
       townLevel: json['TownLevel'] as int,

@@ -11,5 +11,7 @@ class AppPages {
         binding: SplashBinding()),
     GetPage(
         name: Routes.HOME, page: () => HomeScreen(), binding: HomeBinding()),
+    GetPage(
+        name: Routes.INFO, page: () => InfoScreen(), binding: InfoBinding()),
   ];
 }

@@ -5,7 +5,7 @@ part 'character_summary_models.g.dart';
 @JsonSerializable()
 class CharacterSummaryData {
   @JsonKey(name: "CharacterImage")
-  final String characterImage;
+  final String? characterImage;
   @JsonKey(name: "ExpeditionLevel")
   final int expeditionLevel;
   @JsonKey(name: "PvpGradeName")
@@ -30,7 +30,7 @@ class CharacterSummaryData {
   final String itemAvgLevel;
 
   CharacterSummaryData(
-      {required this.characterImage,
+      {this.characterImage,
       required this.expeditionLevel,
       required this.pvpGradeName,
       required this.townLevel,
