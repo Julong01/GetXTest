@@ -13,5 +13,9 @@ class AppPages {
         name: Routes.HOME, page: () => HomeScreen(), binding: HomeBinding()),
     GetPage(
         name: Routes.INFO, page: () => InfoScreen(), binding: InfoBinding()),
+    GetPage(
+        name: Routes.INTEGRATION,
+        page: () => IntegrationScreen(),
+        binding: IntegrationBinding()),
   ];
 }

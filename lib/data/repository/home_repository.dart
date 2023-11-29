@@ -3,10 +3,10 @@ import 'package:auction/data/provider/api.dart';
 
 import '../model/news_models.dart';
 
-class NewsRepository {
+class HomeRepository {
   final ApiClient apiClient;
 
-  NewsRepository({required this.apiClient});
+  HomeRepository({required this.apiClient});
 
   Future<List<NoticeData>> getNotices() async {
     return await apiClient.getNotices();

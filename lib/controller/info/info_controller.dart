@@ -19,7 +19,6 @@ class InfoController extends GetxController {
   Future<void> getSummaries() async {
     List<CharacterSummaryData> temp = [];
     for (SiblingsData s in _siblings) {
-      print(s.characterName);
       CharacterSummaryData data =
           await repository.getProfileSummary(s.characterName);
       temp.add(data);

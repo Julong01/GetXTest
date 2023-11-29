@@ -10,7 +10,7 @@ class HomeBinding extends Bindings {
     // TODO: implement dependencies
     Get.lazyPut<HomeController>(() {
       return HomeController(
-          repository: NewsRepository(apiClient: ApiClient(CustomDio().dio)));
+          repository: HomeRepository(apiClient: ApiClient(CustomDio().dio)));
     });
   }
 }

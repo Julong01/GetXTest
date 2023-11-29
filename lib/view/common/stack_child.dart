@@ -156,6 +156,7 @@ class StackChild extends StatelessWidget {
             elevation: _elevation,
             decoration: _decoration,
             ignorePointer: _ignorePointer,
+            margin: _margin,
             builder: _builder,
           ),
         ));

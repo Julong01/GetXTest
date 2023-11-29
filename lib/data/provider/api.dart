@@ -20,4 +20,7 @@ abstract class ApiClient {
   @GET("/armories/characters/{characterName}/profiles")
   Future<CharacterSummaryData> getProfileSummary(
       @Path("characterName") String characterName);
+
+  @GET("/auctions/options")
+  Future<AuctionOptionResponse> getAuctionsOptions();
 }

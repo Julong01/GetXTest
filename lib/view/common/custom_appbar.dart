@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
-  const CustomAppBar({super.key, required this.title});
+  final PreferredSizeWidget? bottom;
+  const CustomAppBar({super.key, required this.title, this.bottom});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -16,7 +17,7 @@ class CustomAppBar extends StatelessWidget {
           title,
           style: const TextStyle(color: Color(0xffc0c0c0), fontSize: 20),
         ),
-        automaticallyImplyLeading: true,
+        bottom: bottom,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,

@@ -41,3 +41,12 @@
 - src/constants
   - 캐릭터 이미지가 null일 경우 대체 이미지 url 반환 함수 구현
 ---
+23.11.29)
+- integration
+  - auction_screen
+    - floating button 추가
+    - auction option data fatch
+    - category dropdown test
+  - integration_screen
+    - tabbar view 추가
+---

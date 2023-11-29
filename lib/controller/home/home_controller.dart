@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'home_model.dart';
 
 class HomeController extends GetxController {
-  final NewsRepository repository;
+  final HomeRepository repository;
   HomeController({required this.repository});
 
   final RxList<Notice> _notices = <Notice>[].obs;

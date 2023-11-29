@@ -36,25 +36,21 @@ class InfoScreen extends GetView<InfoController> {
                         child: Stack(
                           children: [
                             StackChild(
-                                top: 0,
-                                bottom: 70,
-                                start: 0,
-                                end: 0,
-                                builder: (constraints) => Container(
-                                      decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              topLeft: Radius.circular(10))),
-                                      child: ImageWidget(
-                                          imageUrl:
-                                              _.list[index].characterImage ??
-                                                  pathToClass(_.list[index]
-                                                      .characterClassName),
-                                          radius: 0,
-                                          width: constraints.maxWidth,
-                                          fit: BoxFit.fill,
-                                          height: constraints.maxHeight),
-                                    )),
+                              top: 0,
+                              bottom: 70,
+                              start: 0,
+                              end: 0,
+                              builder: (constraints) => ImageWidget.constraints(
+                                imageUrl: _.list[index].characterImage ??
+                                    pathToClass(
+                                        _.list[index].characterClassName),
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10),
+                                    topLeft: Radius.circular(10)),
+                                fit: BoxFit.fill,
+                                constraints: constraints,
+                              ),
+                            ),
                             StackChild(
                               height: 20,
                               bottom: 40,

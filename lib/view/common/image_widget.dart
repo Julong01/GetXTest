@@ -26,7 +26,7 @@ class ImageWidget extends StatelessWidget {
   final double _height;
   final double _radius;
   final String _imageUrl;
-
+  final BorderRadius? _borderRadius;
   final BoxFit _fit;
   final ImageWidgetOnTap? _onTap;
   final Function? _onTabVoid;
@@ -40,6 +40,7 @@ class ImageWidget extends StatelessWidget {
       required double width,
       required double height,
       double radius = 4,
+      BorderRadius? borderRadius,
       String? defaultUrl,
       ImageWidgetOnTap? onTap,
       Function? onTabVoid,
@@ -53,6 +54,7 @@ class ImageWidget extends StatelessWidget {
         _radius = radius,
         _width = width,
         _height = height,
+        _borderRadius = borderRadius,
         _color = color,
         _useColor = useColor ?? true;
 
@@ -62,6 +64,7 @@ class ImageWidget extends StatelessWidget {
       {required String imageUrl,
       required BoxConstraints constraints,
       double radius = 4,
+      BorderRadius? borderRadius,
       ImageWidgetOnTap? onTap,
       Function? onTabVoid,
       Color? color,
@@ -73,6 +76,7 @@ class ImageWidget extends StatelessWidget {
         _onTabVoid = onTabVoid,
         _width = constraints.maxWidth,
         _radius = radius,
+        _borderRadius = borderRadius,
         _height = constraints.maxHeight,
         _color = color,
         _useColor = useColor ?? false;
@@ -87,7 +91,8 @@ class ImageWidget extends StatelessWidget {
         useOldImageOnUrlChange: false,
         imageBuilder: (context, imageProvider) => Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(_radius)),
+                  borderRadius: _borderRadius ??
+                      BorderRadius.all(Radius.circular(_radius)),
                   image: DecorationImage(image: imageProvider, fit: _fit)),
             ),
         errorWidget: (_, __, ___) {

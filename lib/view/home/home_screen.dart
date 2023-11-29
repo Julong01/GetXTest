@@ -245,7 +245,7 @@ class HomeScreen extends GetView<HomeController> {
               border: Border.all(color: Colors.white),
               borderRadius: const BorderRadius.all(Radius.circular(4))),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () => Get.toNamed("/integration"),
             iconSize: 15,
             padding: const EdgeInsets.all(0),
             icon: const Icon(
