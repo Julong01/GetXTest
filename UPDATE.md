@@ -45,8 +45,8 @@
 - integration
   - auction_screen
     - floating button 추가
-    - auction option data fatch
+    - auction option data fetch
     - category dropdown test
   - integration_screen
-    - tabbar view 추가
+    - tab bar view 추가
 ---
