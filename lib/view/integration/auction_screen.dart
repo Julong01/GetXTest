@@ -1,6 +1,7 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:auction/controller/controllers.dart';
 import 'package:auction/view/widgets.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -56,82 +57,447 @@ class AuctionScreen extends GetView<AuctionController> {
       ),
       body: SingleChildScrollView(
           child: SizedBox(
-        width: 360.w,
-        height: 780.h,
-        child: Stack(
-          children: [
-            Obx(() => (controller.isLoaded)
-                ? StackChild(
-                    top: 10,
-                    start: 10,
-                    end: 10,
-                    height: 210.h,
-                    builder: (constraints) => _buildBasicOptions(constraints))
-                : Container()),
-            Obx(
-              () => StackChild(
-                  top: 230,
-                  start: 10,
-                  end: 10,
-                  height: controller.isSkills ? 210 : 0,
-                  duration: const Duration(milliseconds: 800),
-                  builder: (constraints) => Container(
-                        color: Colors.blue,
-                      )),
-            )
-          ],
-        ),
-      )),
+              width: 360.w,
+              height: 780.h,
+              child: Obx(
+                () => !controller.isLoaded
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Stack(
+                        children: [
+                          StackChild(
+                              top: 10.h,
+                              start: 10,
+                              end: 10,
+                              height: 235.h,
+                              builder: (constraints) =>
+                                  _buildBasicOptions(constraints)),
+                          Obx(
+                            () => StackChild(
+                                top: 245.h,
+                                start: 10,
+                                end: 10,
+                                height: controller.isSkills ? 210 : 0,
+                                duration: const Duration(milliseconds: 800),
+                                builder: (constraints) => Container(
+                                      color: Colors.blue,
+                                    )),
+                          )
+                        ],
+                      ),
+              ))),
     );
   }
 
   Widget _buildBasicOptions(BoxConstraints constraints) {
-    TextStyle lableStyle = const TextStyle(color: Colors.white);
+    TextStyle labelStyle = const TextStyle(color: Colors.white);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Stack(
         children: [
           StackChild(
-              top: 0,
-              start: 0,
-              height: 72.h,
-              width: 130.w,
-              builder: (_) => Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 20.h,
-                          child: AutoText(
-                            text: "카테고리",
-                            fontSizeSp: 12,
-                            style: lableStyle,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 4.h,
-                        ),
-                        SizedBox(
-                          height: 48.h,
-                          width: _.maxWidth,
-                          child: CustomDropdown<DropDownData>(
-                            initialItem: controller.categories![0],
-                            items: controller.categories,
-                            excludeSelected: false,
-                            onChanged: (val) =>
-                                controller.setCurrentCategory(val),
-                            hintBuilder: (context, str) => Container(
-                              width: _.maxWidth,
-                              height: 48.h,
-                              child: Text(str),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ))
+            top: 0,
+            start: 0,
+            height: 68.h,
+            width: 110.w,
+            builder: (_) => Obx(() => _buildDropDown(
+                _,
+                "카테고리",
+                Icons.category_rounded,
+                controller.categories!,
+                controller.selectedCategory!,
+                (data) => controller.setCurrentCategory(data))),
+          ),
+          _buildItemNameField(labelStyle),
+          StackChild(
+            top: 75.h,
+            start: 0,
+            height: 68.h,
+            width: 110.w,
+            builder: (_) => Obx(() => _buildDropDown(
+                _,
+                "직업",
+                Icons.class_outlined,
+                controller.classList!,
+                controller.selectedClass!,
+                (data) => controller.setCurrentClass(data))),
+          ),
+          StackChild(
+            top: 75.h,
+            end: 105.w,
+            height: 68.h,
+            width: 85.w,
+            builder: (_) => Obx(() => _buildDropDown(
+                _,
+                "아이템 등급",
+                Icons.grade_rounded,
+                controller.gradeList!,
+                controller.selectedGrade!,
+                (data) => controller.setCurrentGrade(data))),
+          ),
+          StackChild(
+            top: 75.h,
+            end: 0.w,
+            height: 68.h,
+            width: 85.w,
+            builder: (_) => Obx(
+              () => _buildDropDown(
+                _,
+                "품질",
+                Icons.high_quality_rounded,
+                controller.qualityList!,
+                controller.selectedQuality!,
+                controller.isAccessories
+                    ? (data) => controller.setCurrentQuality(data)
+                    : null,
+              ),
+            ),
+          ),
+          StackChild(
+            top: 150.h,
+            start: 0.w,
+            height: 68.h,
+            width: 110.w,
+            builder: (_) => Obx(
+              () => _buildDropDown(
+                _,
+                "아이템 티어",
+                CupertinoIcons.chart_bar_circle,
+                controller.itemTierList!,
+                controller.selectedItemTier!,
+                (data) => controller.setCurrentItemTier(data),
+              ),
+            ),
+          ),
+          _buildItemLevelField(labelStyle)
         ],
       ),
     );
+  }
+
+  Widget _buildDropDown(
+      BoxConstraints constraints,
+      String label,
+      IconData icons,
+      List<DropDownData> list,
+      DropDownData select,
+      Function(DropDownData data)? onChange) {
+    return SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+              height: 20.h,
+              child: Row(
+                children: [
+                  AutoText(
+                    text: label,
+                    fontSizeSp: 12,
+                    style: TextStyle(
+                        color: onChange == null ? Colors.grey : Colors.white),
+                  ),
+                  SizedBox(
+                    width: 2.w,
+                  ),
+                  Icon(
+                    icons,
+                    size: 13,
+                    color: onChange == null ? Colors.grey : Colors.white,
+                  )
+                ],
+              )),
+          SizedBox(
+            height: 4.h,
+          ),
+          SizedBox(
+              height: 40.h,
+              width: constraints.maxWidth,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2<dynamic>(
+                  isExpanded: true,
+                  iconStyleData: const IconStyleData(
+                      iconDisabledColor: Colors.grey,
+                      iconEnabledColor: Colors.white),
+                  items: list
+                      .map((e) => [
+                            DropdownMenuItem(
+                              value: e,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                child: Text(
+                                  e.title,
+                                  style: TextStyle(
+                                      color: onChange == null
+                                          ? Colors.grey
+                                          : e.titleColor ?? Colors.white,
+                                      fontSize: 12),
+                                ),
+                              ),
+                            ),
+                            if (list.last != e)
+                              DropdownMenuItem(
+                                enabled: false,
+                                value: DropDownData.enable(),
+                                child: const Divider(),
+                              )
+                          ])
+                      .expand((x) => x)
+                      .toList(),
+                  value: select,
+                  onChanged: onChange == null ? null : (s) => onChange(s),
+                  buttonStyleData: ButtonStyleData(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: onChange == null
+                                  ? Colors.grey
+                                  : Colors.white),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4))),
+                      padding: const EdgeInsets.all(5).copyWith(left: 0),
+                      width: constraints.maxWidth,
+                      height: 44.h),
+                  menuItemStyleData: MenuItemStyleData(
+                      height: 40.h,
+                      padding: const EdgeInsets.all(0),
+                      customHeights: list
+                          .map((e) => [40.h, if (list.last != e) 1.h])
+                          .expand((x) => x)
+                          .toList(),
+                      selectedMenuItemBuilder: (context, widget) => Container(
+                            color: Colors.white.withOpacity(0.3),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 2.h, vertical: 1.h),
+                            child: widget,
+                          )),
+                  dropdownStyleData: DropdownStyleData(
+                    maxHeight: 167.h,
+                    padding: const EdgeInsets.all(0).copyWith(top: 1),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        color: Colors.black,
+                        borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(4),
+                            bottomLeft: Radius.circular(4))),
+                  ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemNameField(TextStyle style) {
+    return StackChild(
+        top: 0,
+        end: 0,
+        height: 68.h,
+        width: 190.w,
+        builder: (_) => SizedBox(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                      height: 20.h,
+                      child: Row(
+                        children: [
+                          AutoText(
+                            text: "아이템 이름",
+                            fontSizeSp: 12,
+                            style: style,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          const Icon(
+                            CupertinoIcons.cube_box_fill,
+                            size: 13,
+                            color: Colors.white,
+                          )
+                        ],
+                      )),
+                  SizedBox(
+                    height: 4.h,
+                  ),
+                  SizedBox(
+                    height: 40.h,
+                    width: _.maxWidth,
+                    child: Obx(() => TextField(
+                          controller: controller.itemName,
+                          cursorColor: Colors.white,
+                          textAlign: TextAlign.start,
+                          cursorWidth: 1,
+                          onTapOutside: (event) =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
+                          decoration: const InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 15),
+                              hintText: "(검색어 입력)",
+                              hintStyle: TextStyle(color: Color(0xffdddddd)),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xffeeeeee)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white))),
+                        )),
+                  )
+                ],
+              ),
+            ));
+  }
+
+  Widget _buildItemLevelField(TextStyle style) {
+    return StackChild(
+        top: 150.h,
+        end: 0,
+        height: 68.h,
+        width: 190.w,
+        builder: (_) => SizedBox(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                      height: 20.h,
+                      child: Row(
+                        children: [
+                          AutoText(
+                            text: "아이템 레벨",
+                            fontSizeSp: 12,
+                            style: style,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          const Icon(
+                            CupertinoIcons.desktopcomputer,
+                            size: 13,
+                            color: Colors.white,
+                          )
+                        ],
+                      )),
+                  SizedBox(
+                    height: 4.h,
+                  ),
+                  SizedBox(
+                    height: 40.h,
+                    width: _.maxWidth,
+                    child: Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 85.w,
+                              child: TextField(
+                                controller: controller.itemMinLv,
+                                cursorColor: Colors.white,
+                                textAlign: TextAlign.start,
+                                cursorWidth: 1,
+                                onTapOutside: (event) => FocusManager
+                                    .instance.primaryFocus
+                                    ?.unfocus(),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                                keyboardType: TextInputType.number,
+                                onChanged: (str) {
+                                  if (str.contains(".")) {
+                                    controller.itemMinLv.text = "0";
+                                    return;
+                                  }
+                                  if (str.startsWith("-")) {
+                                    controller.itemMinLv.text = "0";
+                                    return;
+                                  }
+                                  int num = int.parse(str);
+                                  if (num <= 0 ||
+                                      num >
+                                          int.parse(
+                                              controller.itemMaxLv.text) ||
+                                      num > controller.response.maxItemLevel) {
+                                    controller.itemMinLv.text = "0";
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: "최소 레벨",
+                                    hintStyle:
+                                        TextStyle(color: Color(0xffdddddd)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xffeeeeee)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white))),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                              child: const Icon(
+                                CupertinoIcons.bolt_horizontal_fill,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 85.w,
+                              child: TextField(
+                                controller: controller.itemMaxLv,
+                                cursorColor: Colors.white,
+                                textAlign: TextAlign.start,
+                                cursorWidth: 1,
+                                onTapOutside: (event) => FocusManager
+                                    .instance.primaryFocus
+                                    ?.unfocus(),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                                keyboardType: TextInputType.number,
+                                onChanged: (str) {
+                                  if (str.isEmpty || str.contains(".")) {
+                                    controller.itemMaxLv.text = controller
+                                        .response.maxItemLevel
+                                        .toString();
+                                    return;
+                                  }
+                                  if (str.startsWith("-")) {
+                                    controller.itemMaxLv.text = controller
+                                        .response.maxItemLevel
+                                        .toString();
+                                    return;
+                                  }
+                                  int num = int.parse(str);
+                                  if (num <= 0 ||
+                                      num <
+                                          int.parse(
+                                              controller.itemMinLv.text) ||
+                                      num > controller.response.maxItemLevel) {
+                                    controller.itemMaxLv.text = controller
+                                        .response.maxItemLevel
+                                        .toString();
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: "최대 레벨",
+                                    hintStyle:
+                                        TextStyle(color: Color(0xffdddddd)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xffeeeeee)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white))),
+                              ),
+                            )
+                          ],
+                        )),
+                  )
+                ],
+              ),
+            ));
   }
 }

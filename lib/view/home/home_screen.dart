@@ -16,107 +16,122 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        top: false,
         child: Scaffold(
             body: Center(
                 child: SingleChildScrollView(
-      child: Column(
-        children: [
-          Section(
-            designSize: const Size(360, 296),
-            color: const Color.fromRGBO(21, 24, 29, 1),
-            relativePadding: const EdgeInsets.all(10).copyWith(bottom: 0),
-            builder: (_, __, ___) => [
-              StackChild(
-                  top: 0,
-                  start: 20,
-                  height: 25,
-                  builder: (_) => AutoText(
-                        text: (Get.find<HomeController>().data.characterName),
-                        fontSizeSp: 20,
-                        style: const TextStyle(color: Colors.white),
-                      )),
-              StackChild(
-                  top: 0, end: 20, height: 28, builder: (_) => _buildButtons()),
-              StackChild(
-                  top: 25,
-                  start: 0,
-                  bottom: 0,
-                  end: 0,
-                  builder: (_) => _buildProfileBox(_))
-            ],
-          ),
-          Section(
-            designSize: const Size(360, 200),
-            relativePadding: const EdgeInsets.symmetric(vertical: 15),
-            builder: (_, __, ___) => [
-              Obx(
-                () => CarouselSlider(
-                    carouselController: controller.carousel,
-                    items: controller.events.map((event) {
-                      return InkWell(
-                        onTap: () async => Util.launchUrlLostArc(event.link),
-                        child: ImageWidget(
-                            imageUrl: event.thumbnail,
-                            width: __.maxWidth,
-                            radius: 0,
-                            height: __.maxHeight),
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        aspectRatio: 21 / 9,
-                        viewportFraction: 1,
-                        height: __.maxHeight,
-                        scrollDirection: Axis.horizontal,
-                        autoPlayAnimationDuration: const Duration(seconds: 5),
-                        autoPlayInterval: const Duration(seconds: 5),
-                        onPageChanged: (index, reason) {})),
+          child: Column(
+            children: [
+              Section(
+                designSize: const Size(360, 40),
+                color: const Color.fromRGBO(21, 24, 29, 1),
+              ),
+              Section(
+                designSize: const Size(360, 296),
+                color: const Color.fromRGBO(21, 24, 29, 1),
+                relativePadding: const EdgeInsets.all(10).copyWith(bottom: 0),
+                builder: (_, __, ___) => [
+                  StackChild(
+                      top: 0,
+                      start: 20,
+                      height: 25,
+                      builder: (_) => AutoText(
+                            text:
+                                (Get.find<HomeController>().data.characterName),
+                            fontSizeSp: 20,
+                            style: const TextStyle(color: Colors.white),
+                          )),
+                  StackChild(
+                      top: 0,
+                      end: 20,
+                      height: 28,
+                      builder: (_) => _buildButtons()),
+                  StackChild(
+                      top: 25,
+                      start: 0,
+                      bottom: 0,
+                      end: 0,
+                      builder: (_) => _buildProfileBox(_))
+                ],
+              ),
+              Section(
+                designSize: const Size(360, 200),
+                relativePadding: const EdgeInsets.symmetric(vertical: 15),
+                builder: (_, __, ___) => [
+                  Obx(
+                    () => CarouselSlider(
+                        carouselController: controller.carousel,
+                        items: controller.events.map((event) {
+                          return InkWell(
+                            onTap: () async =>
+                                Util.launchUrlLostArc(event.link),
+                            child: ImageWidget(
+                                imageUrl: event.thumbnail,
+                                width: __.maxWidth,
+                                radius: 0,
+                                height: __.maxHeight),
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 21 / 9,
+                            viewportFraction: 1,
+                            height: __.maxHeight,
+                            scrollDirection: Axis.horizontal,
+                            autoPlayAnimationDuration:
+                                const Duration(seconds: 5),
+                            autoPlayInterval: const Duration(seconds: 5),
+                            onPageChanged: (index, reason) {})),
+                  ),
+                ],
+              ),
+              Section(
+                designSize: const Size(360, 204),
+                relativePadding: const EdgeInsets.all(10).copyWith(top: 0),
+                builder: (_, __, ___) => [
+                  StackChild(
+                      height: 20.h,
+                      start: 12.w,
+                      top: 0.h,
+                      builder: (_) => AutoText(text: "공지사항", fontSizeSp: 12)),
+                  StackChild(
+                      height: 184.h,
+                      width: ___.maxWidth,
+                      bottom: 0,
+                      builder: (_) => SizedBox(
+                          width: _.maxWidth,
+                          height: __.maxHeight,
+                          child: Obx(() => controller.notices.isEmpty
+                              ? Container()
+                              : SizedBox(
+                                  width: __.maxWidth,
+                                  height: __.maxHeight,
+                                  child: PaginatedDataTable2(
+                                      // rowsPerPage: 3,
+                                      horizontalMargin: 10,
+                                      columnSpacing: 10,
+                                      headingRowHeight: 36,
+                                      fixedTopRows: 1,
+                                      autoRowsToHeight: true,
+                                      columns: const [
+                                        DataColumn2(
+                                            label: Text("type"),
+                                            fixedWidth: 40),
+                                        DataColumn2(
+                                            label: Text("title"),
+                                            fixedWidth: 250),
+                                        DataColumn2(
+                                            label: Text("date"),
+                                            fixedWidth: 70),
+                                      ],
+                                      source: _DataSource(
+                                          data: controller.notices)),
+                                )))),
+                ],
               ),
             ],
           ),
-          Section(
-            designSize: const Size(360, 204),
-            relativePadding: const EdgeInsets.all(10).copyWith(top: 0),
-            builder: (_, __, ___) => [
-              StackChild(
-                  height: 20.h,
-                  start: 12.w,
-                  top: 0.h,
-                  builder: (_) => AutoText(text: "공지사항", fontSizeSp: 12)),
-              StackChild(
-                  height: 184.h,
-                  bottom: 0,
-                  builder: (_) => SizedBox(
-                      width: __.maxWidth,
-                      height: __.maxHeight,
-                      child: Obx(() => controller.notices.isEmpty
-                          ? Container()
-                          : SizedBox(
-                              width: __.maxWidth,
-                              height: __.maxHeight,
-                              child: PaginatedDataTable2(
-                                  // rowsPerPage: 3,
-                                  horizontalMargin: 10,
-                                  columnSpacing: 10,
-                                  headingRowHeight: 36,
-                                  fixedTopRows: 1,
-                                  autoRowsToHeight: true,
-                                  columns: const [
-                                    DataColumn2(
-                                        label: Text("type"), fixedWidth: 40),
-                                    DataColumn2(
-                                        label: Text("title"), fixedWidth: 260),
-                                    DataColumn2(
-                                        label: Text("date"), fixedWidth: 60),
-                                  ],
-                                  source:
-                                      _DataSource(data: controller.notices)),
-                            )))),
-            ],
-          ),
-        ],
-      ),
-    ))));
+        ))));
   }
 
   Widget _buildProfileBox(BoxConstraints constraints) {
@@ -130,8 +145,8 @@ class HomeScreen extends GetView<HomeController> {
           ImageWidget(
               imageUrl:
                   data.characterImage ?? pathToClass(data.characterClassName),
-              width: constraints.maxWidth / 2.5,
-              height: constraints.maxHeight - 34),
+              width: constraints.maxWidth / 2.2,
+              height: constraints.maxHeight - 50.h),
           const SizedBox(
             width: 10,
           ),

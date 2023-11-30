@@ -50,3 +50,11 @@
   - integration_screen
     - tab bar view 추가
 ---
+23.11.30)
+- integration
+  - auction_screen
+    - basic option box 추가
+    - custom dropdown 구현
+    - 아이템 등급, 품질 별 색깔 구현
+    - 특정 옵션중 드롭다운 및 스킬옵션 박스 비활성화
+---
