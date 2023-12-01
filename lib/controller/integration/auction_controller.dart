@@ -146,6 +146,28 @@ class AuctionController extends GetxController
     _selectedItemTier!.value = cur;
   }
 
+  validatorMinValue() {
+    if (_itemMinLv.value.text.contains(RegExp(r"[.,-]"))) {
+      return false;
+    }
+    if (_itemMinLv.value.text.isEmpty ||
+        int.parse(_itemMinLv.value.text) > int.parse(_itemMaxLv.value.text)) {
+      return false;
+    }
+    return true;
+  }
+
+  validatorMaxValue() {
+    if (_itemMaxLv.value.text.contains(RegExp(r"[.,-]"))) {
+      return false;
+    }
+    if (_itemMaxLv.value.text.isEmpty ||
+        int.parse(_itemMinLv.value.text) > int.parse(_itemMaxLv.value.text)) {
+      return false;
+    }
+    return true;
+  }
+
   late AnimationController dialController =
       AnimationController(vsync: this, duration: const Duration(seconds: 1));
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);

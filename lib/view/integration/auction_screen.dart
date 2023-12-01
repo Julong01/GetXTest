@@ -3,9 +3,11 @@ import 'package:auction/view/widgets.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class AuctionScreen extends GetView<AuctionController> {
   AuctionScreen({super.key});
@@ -73,17 +75,25 @@ class AuctionScreen extends GetView<AuctionController> {
                               height: 235.h,
                               builder: (constraints) =>
                                   _buildBasicOptions(constraints)),
-                          Obx(
-                            () => StackChild(
-                                top: 245.h,
-                                start: 10,
-                                end: 10,
-                                height: controller.isSkills ? 210 : 0,
-                                duration: const Duration(milliseconds: 800),
-                                builder: (constraints) => Container(
-                                      color: Colors.blue,
-                                    )),
-                          )
+                          Obx(() => StackChild(
+                              top: 245.h,
+                              start: 17.w,
+                              end: 17.w,
+                              height: controller.isSkills ? 210.h : 45.h,
+                              duration: const Duration(milliseconds: 800),
+                              builder: (constraints) => Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: controller.isSkills
+                                                ? Colors.white
+                                                : Colors.grey),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5)),
+                                        color: Colors.black),
+                                    padding: EdgeInsets.all(10.h),
+                                    child: _buildSkillsOption(
+                                        constraints, controller.isSkills),
+                                  )))
                         ],
                       ),
               ))),
@@ -394,29 +404,31 @@ class AuctionScreen extends GetView<AuctionController> {
                                 cursorColor: Colors.white,
                                 textAlign: TextAlign.start,
                                 cursorWidth: 1,
-                                onTapOutside: (event) => FocusManager
-                                    .instance.primaryFocus
-                                    ?.unfocus(),
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 12),
                                 keyboardType: TextInputType.number,
-                                onChanged: (str) {
-                                  if (str.contains(".")) {
-                                    controller.itemMinLv.text = "0";
-                                    return;
-                                  }
-                                  if (str.startsWith("-")) {
-                                    controller.itemMinLv.text = "0";
-                                    return;
-                                  }
-                                  int num = int.parse(str);
-                                  if (num <= 0 ||
-                                      num >
-                                          int.parse(
-                                              controller.itemMaxLv.text) ||
-                                      num > controller.response.maxItemLevel) {
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'[0-9]]')),
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                onTapOutside: (event) {
+                                  if (!controller.validatorMinValue()) {
                                     controller.itemMinLv.text = "0";
                                   }
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                onSubmitted: (str) {
+                                  if (!controller.validatorMinValue()) {
+                                    controller.itemMinLv.text = "0";
+                                  }
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                onEditingComplete: () {
+                                  if (!controller.validatorMinValue()) {
+                                    controller.itemMinLv.text = "0";
+                                  }
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                 },
                                 decoration: const InputDecoration(
                                     contentPadding:
@@ -448,35 +460,37 @@ class AuctionScreen extends GetView<AuctionController> {
                                 cursorColor: Colors.white,
                                 textAlign: TextAlign.start,
                                 cursorWidth: 1,
-                                onTapOutside: (event) => FocusManager
-                                    .instance.primaryFocus
-                                    ?.unfocus(),
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 12),
                                 keyboardType: TextInputType.number,
-                                onChanged: (str) {
-                                  if (str.isEmpty || str.contains(".")) {
-                                    controller.itemMaxLv.text = controller
-                                        .response.maxItemLevel
-                                        .toString();
-                                    return;
-                                  }
-                                  if (str.startsWith("-")) {
-                                    controller.itemMaxLv.text = controller
-                                        .response.maxItemLevel
-                                        .toString();
-                                    return;
-                                  }
-                                  int num = int.parse(str);
-                                  if (num <= 0 ||
-                                      num <
-                                          int.parse(
-                                              controller.itemMinLv.text) ||
-                                      num > controller.response.maxItemLevel) {
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'[0-9]]')),
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                onTapOutside: (event) {
+                                  if (!controller.validatorMaxValue()) {
                                     controller.itemMaxLv.text = controller
                                         .response.maxItemLevel
                                         .toString();
                                   }
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                onSubmitted: (str) {
+                                  if (!controller.validatorMaxValue()) {
+                                    controller.itemMaxLv.text = controller
+                                        .response.maxItemLevel
+                                        .toString();
+                                  }
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                onEditingComplete: () {
+                                  if (!controller.validatorMaxValue()) {
+                                    controller.itemMaxLv.text = controller
+                                        .response.maxItemLevel
+                                        .toString();
+                                  }
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                 },
                                 decoration: const InputDecoration(
                                     contentPadding:
@@ -499,5 +513,47 @@ class AuctionScreen extends GetView<AuctionController> {
                 ],
               ),
             ));
+  }
+
+  Widget _buildSkillsOption(BoxConstraints constraints, bool isSkills) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 20.h,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AutoText(
+                text: "스킬 상세 옵션",
+                fontSizeSp: 13,
+                style: TextStyle(color: isSkills ? Colors.white : Colors.grey),
+              ),
+              RotatedBox(
+                quarterTurns: 2,
+                child: Icon(
+                  isSkills ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                  color: isSkills ? Colors.white : Colors.grey,
+                ),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: isSkills ? 165.h : 0,
+          child: Stack(
+            children: [
+              StackChild(
+                width: constraints.maxWidth,
+                height: isSkills ? 165.h : 0,
+                builder: (_) => Container(
+                  color: Colors.red,
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
