@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 
 class AuctionScreen extends GetView<AuctionController> {
   AuctionScreen({super.key});
@@ -79,7 +78,7 @@ class AuctionScreen extends GetView<AuctionController> {
                               top: 245.h,
                               start: 17.w,
                               end: 17.w,
-                              height: controller.isSkills ? 210.h : 45.h,
+                              height: controller.isSkills ? 180.h : 45.h,
                               duration: const Duration(milliseconds: 800),
                               builder: (constraints) => Container(
                                     decoration: BoxDecoration(
@@ -524,35 +523,115 @@ class AuctionScreen extends GetView<AuctionController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AutoText(
-                text: "스킬 상세 옵션",
-                fontSizeSp: 13,
-                style: TextStyle(color: isSkills ? Colors.white : Colors.grey),
-              ),
-              RotatedBox(
-                quarterTurns: 2,
-                child: Icon(
-                  isSkills ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-                  color: isSkills ? Colors.white : Colors.grey,
-                ),
-              )
+              SizedBox(
+                  width: 100.h,
+                  child: Row(
+                    children: [
+                      AutoText(
+                        text: "스킬 상세 옵션",
+                        fontSizeSp: 12,
+                        style: TextStyle(
+                            color: !isSkills ? Colors.grey : Colors.white),
+                      ),
+                      SizedBox(
+                        width: 2.w,
+                      ),
+                      Icon(
+                        !isSkills
+                            ? CupertinoIcons.arrowtriangle_down
+                            : CupertinoIcons.arrowtriangle_up,
+                        size: 13,
+                        color: !isSkills ? Colors.grey : Colors.white,
+                      )
+                    ],
+                  )),
+              SizedBox(
+                  width: 100.h,
+                  height: 20.h,
+                  child: BaseWidget(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: !isSkills ? Colors.grey : Colors.white,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4))),
+                      onTap: () => {},
+                      builder: (_) => Row(
+                            children: [
+                              SizedBox(
+                                  height: 20.h,
+                                  width: 20.h,
+                                  child: Icon(
+                                    Icons.refresh_rounded,
+                                    color:
+                                        !isSkills ? Colors.grey : Colors.white,
+                                    size: 18.h,
+                                  )),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              AutoText(
+                                text: "전체 되돌리기",
+                                fontSizeSp: 12,
+                                style: TextStyle(
+                                    color:
+                                        !isSkills ? Colors.grey : Colors.white),
+                              ),
+                            ],
+                          ))),
             ],
           ),
         ),
         SizedBox(
-          height: isSkills ? 165.h : 0,
-          child: Stack(
-            children: [
-              StackChild(
-                width: constraints.maxWidth,
-                height: isSkills ? 165.h : 0,
-                builder: (_) => Container(
-                  color: Colors.red,
-                ),
-              )
-            ],
-          ),
+          height: 3.h,
         ),
+        Expanded(
+          child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: constraints.maxWidth,
+              height: isSkills ? 160.h : 0.h,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        children: [
+                          Container(
+                              width: 100.w,
+                              color: Colors.yellow,
+                              child:
+                                  DropdownButtonFormField2<dynamic>(items: [])),
+                          Container(
+                            width: 10.w,
+                            color: Colors.red,
+                          ),
+                          Container(
+                            width: 100.w,
+                            color: Colors.yellow,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 10.h,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        height: 44.h,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        )
       ],
     );
   }
