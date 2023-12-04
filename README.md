@@ -27,3 +27,12 @@ lib
   provider -> repository -> controller -> view
 
 api => retrofit, dio, json_serializer
+
+[x] 초기 화면 캐릭터 이름으로 character 정보 가져오기
+[x] 홉 페이지 공지사항, 이벤트 정보 가져오기
+[x] 계정내 형제 캐릭터 정보 그리드 뷰로 가져오기
+[x] 초기 화면으로 돌아가기
+[] 경매장 옵션 입력 스크린 구성
+[] 경매장 옵션에 따른 결과 리스트
+[] 경매장 옵션 저장
+[] 경매장 옵션 불러오기
