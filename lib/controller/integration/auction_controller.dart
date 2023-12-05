@@ -1,23 +1,10 @@
 import 'package:auction/data/model/auctions_models.dart';
-import 'package:auction/data/repository/autions_repository.dart';
+import 'package:auction/data/repository/auctions_repository.dart';
 import 'package:auction/util/util_method.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-class DropDownData {
-  String title;
-  dynamic code;
-  Color? titleColor;
-  DropDownData(this.title, this.code, this.titleColor);
-
-  static enable() => DropDownData("dummy", 100000001, null);
-
-  @override
-  String toString() {
-    // TODO: implement toString
-    return title;
-  }
-}
+import '../../data/local/drop_down_model.dart';
 
 class AuctionController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -25,7 +12,7 @@ class AuctionController extends GetxController
 
   AuctionController({required this.repository});
 
-  final RxBool _isSkills = true.obs;
+  final RxBool _isSkills = false.obs;
   final RxBool _isAccessories = false.obs;
   final RxBool _isLoaded = false.obs;
 
@@ -40,7 +27,18 @@ class AuctionController extends GetxController
   Rx<DropDownData>? _selectedQuality;
   List<DropDownData>? _itemTierList;
   Rx<DropDownData>? _selectedItemTier;
-
+  List<DropDownData>? _firstSkillOption;
+  Rx<DropDownData>? _selectedFirst;
+  List<DropDownData>? _firstSkillTripod;
+  Rx<DropDownData>? _selectedFirstTri;
+  List<DropDownData>? _secondSkillOption;
+  Rx<DropDownData>? _selectedSecond;
+  List<DropDownData>? _secondSkillTripod;
+  Rx<DropDownData>? _selectedSecondTri;
+  final Rx<TextEditingController> _firstSkill =
+      TextEditingController(text: "").obs;
+  final Rx<TextEditingController> _secondSkill =
+      TextEditingController(text: "").obs;
   final Rx<TextEditingController> _itemName =
       TextEditingController(text: "").obs;
   final Rx<TextEditingController> _itemMinLv =
@@ -62,6 +60,7 @@ class AuctionController extends GetxController
     setGrades();
     setQualities();
     setItemTiers();
+    setSkillsOptions();
     _itemMaxLv.value.text = response.maxItemLevel.toString();
     _isLoaded.value = true;
   }
@@ -82,6 +81,7 @@ class AuctionController extends GetxController
   setCurrentCategory(DropDownData cur) {
     _selectedCategory!.value = cur;
     _isSkills.value = ((_selectedCategory!.value.code >= 170300 &&
+            (selectedClass?.title ?? "전체") != "전체" &&
             _selectedCategory!.value.code <= 190050) ||
         _selectedCategory!.value.code == 10000 ||
         _selectedCategory!.value.code == 210000);
@@ -104,6 +104,9 @@ class AuctionController extends GetxController
 
   setCurrentClass(DropDownData cur) {
     _selectedClass!.value = cur;
+    if (cur.title != "전체") {
+      setSkillsOptions();
+    }
   }
 
   setGrades() {
@@ -146,6 +149,49 @@ class AuctionController extends GetxController
     _selectedItemTier!.value = cur;
   }
 
+  setSkillsOptions() {
+    _firstSkillOption = [];
+    _firstSkillOption!.add(DropDownData("없음", null, null));
+    _secondSkillOption = [];
+    _secondSkillOption!.add(DropDownData("없음", null, null));
+    _firstSkillTripod = [];
+    _firstSkillTripod!.add(DropDownData("없음", null, null));
+    _secondSkillTripod = [];
+    _secondSkillTripod!.add(DropDownData("없음", null, null));
+    if (selectedClass != null) {
+      for (SkillOption skill in response.skillOptions) {
+        if (skill.className == selectedClass!.title) {
+          _firstSkillOption!
+              .add(DropDownData(skill.content, skill.value, null));
+          _secondSkillOption!
+              .add(DropDownData(skill.content, skill.value, null));
+        }
+      }
+    }
+  }
+
+  setCurrentFirstSkill(DropDownData cur) {
+    _selectedFirst!.value = cur;
+    for (SkillOption skill in response.skillOptions) {
+      if (skill.value == cur.code) {
+        for (Tripod tri in skill.tripods) {
+          _firstSkillTripod!.add(DropDownData(tri.content, tri.value, null));
+        }
+      }
+    }
+  }
+
+  setCurrentSecondSkill(DropDownData cur) {
+    _selectedSecond!.value = cur;
+    for (SkillOption skill in response.skillOptions) {
+      if (skill.value == cur.code) {
+        for (Tripod tri in skill.tripods) {
+          _secondSkillTripod!.add(DropDownData(tri.content, tri.value, null));
+        }
+      }
+    }
+  }
+
   validatorMinValue() {
     if (_itemMinLv.value.text.contains(RegExp(r"[.,-]"))) {
       return false;
@@ -171,15 +217,14 @@ class AuctionController extends GetxController
   late AnimationController dialController =
       AnimationController(vsync: this, duration: const Duration(seconds: 1));
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
+
   isDialBtnClosed() {
     isDialOpen.value = false;
-    _isSkills.value = true;
     dialController.reverse();
   }
 
   isDialBtnClicked() {
     isDialOpen.value = true;
-    _isSkills.value = false;
     dialController.forward();
   }
 
@@ -194,20 +239,46 @@ class AuctionController extends GetxController
   }
 
   List<DropDownData>? get categories => _categoryList;
+
   DropDownData? get selectedCategory => _selectedCategory!.value;
+
   List<DropDownData>? get classList => _classList;
+
   DropDownData? get selectedClass => _selectedClass!.value;
+
   List<DropDownData>? get gradeList => _gradeList;
+
   DropDownData? get selectedGrade => _selectedGrade!.value;
+
   List<DropDownData>? get qualityList => _qualityList;
+
   DropDownData? get selectedQuality => _selectedQuality!.value;
+
   List<DropDownData>? get itemTierList => _itemTierList;
+
   DropDownData? get selectedItemTier => _selectedItemTier!.value;
 
+  List<DropDownData>? get firstSkillOption => _firstSkillOption;
+
+  DropDownData? get selectedFirst => _selectedFirst?.value;
+
+  List<DropDownData>? get secondSkillOption => _secondSkillOption;
+
+  DropDownData? get selectedSecond => _selectedSecond?.value;
+
+  TextEditingController get firstSkill => _firstSkill.value;
+
+  TextEditingController get secondSkill => _secondSkill.value;
+
   TextEditingController get itemName => _itemName.value;
+
   TextEditingController get itemMaxLv => _itemMaxLv.value;
+
   TextEditingController get itemMinLv => _itemMinLv.value;
+
   bool get isSkills => _isSkills.value;
+
   bool get isAccessories => _isAccessories.value;
+
   bool get isLoaded => _isLoaded.value;
 }
