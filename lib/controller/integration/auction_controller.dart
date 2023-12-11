@@ -60,7 +60,6 @@ class AuctionController extends GetxController
     setGrades();
     setQualities();
     setItemTiers();
-    setSkillsOptions();
     _itemMaxLv.value.text = response.maxItemLevel.toString();
     _isLoaded.value = true;
   }
@@ -91,6 +90,10 @@ class AuctionController extends GetxController
     if (!_isAccessories.value) {
       setCurrentQuality(_qualityList!.first);
     }
+
+    if (_isSkills.value) {
+      setSkillsOptions();
+    }
   }
 
   setClasses() {
@@ -104,6 +107,11 @@ class AuctionController extends GetxController
 
   setCurrentClass(DropDownData cur) {
     _selectedClass!.value = cur;
+    _isSkills.value = ((_selectedCategory!.value.code >= 170300 &&
+            (selectedClass?.title ?? "전체") != "전체" &&
+            _selectedCategory!.value.code <= 190050) ||
+        _selectedCategory!.value.code == 10000 ||
+        _selectedCategory!.value.code == 210000);
     if (cur.title != "전체") {
       setSkillsOptions();
     }
@@ -167,29 +175,67 @@ class AuctionController extends GetxController
               .add(DropDownData(skill.content, skill.value, null));
         }
       }
+      _selectedFirst = _firstSkillOption!.first.obs;
+      _selectedSecond = _secondSkillOption!.first.obs;
+      _selectedFirstTri = _firstSkillTripod!.first.obs;
+      _selectedSecondTri = _secondSkillTripod!.first.obs;
     }
   }
 
   setCurrentFirstSkill(DropDownData cur) {
     _selectedFirst!.value = cur;
+    _firstSkillTripod = [];
+    _firstSkillTripod!.add(DropDownData("없음", null, null));
     for (SkillOption skill in response.skillOptions) {
       if (skill.value == cur.code) {
         for (Tripod tri in skill.tripods) {
-          _firstSkillTripod!.add(DropDownData(tri.content, tri.value, null));
+          if (_selectedCategory!.value.title != "보석") {
+            if (!tri.isGem) {
+              _firstSkillTripod!
+                  .add(DropDownData(tri.content, tri.value, null));
+            }
+          } else {
+            if (tri.isGem) {
+              _firstSkillTripod!
+                  .add(DropDownData(tri.content, tri.value, null));
+            }
+          }
         }
       }
     }
+    _selectedFirstTri = _firstSkillTripod!.first.obs;
   }
 
   setCurrentSecondSkill(DropDownData cur) {
     _selectedSecond!.value = cur;
+    _secondSkillTripod = [];
+    _secondSkillTripod!.add(DropDownData("없음", null, null));
     for (SkillOption skill in response.skillOptions) {
       if (skill.value == cur.code) {
         for (Tripod tri in skill.tripods) {
-          _secondSkillTripod!.add(DropDownData(tri.content, tri.value, null));
+          if (_selectedCategory!.value.title != "보석") {
+            if (!tri.isGem) {
+              _secondSkillTripod!
+                  .add(DropDownData(tri.content, tri.value, null));
+            }
+          } else {
+            if (tri.isGem) {
+              _secondSkillTripod!
+                  .add(DropDownData(tri.content, tri.value, null));
+            }
+          }
         }
       }
     }
+    _selectedSecondTri = _secondSkillTripod!.first.obs;
+  }
+
+  setCurrentFirstTri(DropDownData cur) {
+    _selectedFirstTri!.value = cur;
+  }
+
+  setCurrentSecondTri(DropDownData cur) {
+    _selectedSecondTri!.value = cur;
   }
 
   validatorMinValue() {
@@ -265,6 +311,14 @@ class AuctionController extends GetxController
   List<DropDownData>? get secondSkillOption => _secondSkillOption;
 
   DropDownData? get selectedSecond => _selectedSecond?.value;
+
+  List<DropDownData>? get firstSkillsTri => _firstSkillTripod;
+
+  DropDownData? get selectedFirstTri => _selectedFirstTri?.value;
+
+  List<DropDownData>? get secondSkillsTri => _secondSkillTripod;
+
+  DropDownData? get selectedSecondTri => _selectedSecondTri?.value;
 
   TextEditingController get firstSkill => _firstSkill.value;
 

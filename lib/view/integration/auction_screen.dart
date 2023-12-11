@@ -599,105 +599,25 @@ class AuctionScreen extends GetView<AuctionController> {
                   children: [
                     Expanded(
                       flex: 5,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(
-                            () => Container(
-                                width: 100.w,
-                                color: Colors.yellow,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2<dynamic>(
-                                    isExpanded: true,
-                                    hint: const Text(
-                                      'Select Item',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    items: controller.firstSkillOption!
-                                        .map((item) => DropdownMenuItem(
-                                              value: item,
-                                              child: Text(
-                                                item.title,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ))
-                                        .toList(),
-                                    value: controller.selectedFirst,
-                                    onChanged: (value) =>
-                                        controller.setCurrentFirstSkill(value),
-                                    buttonStyleData: const ButtonStyleData(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      height: 40,
-                                      width: 200,
-                                    ),
-                                    dropdownStyleData: const DropdownStyleData(
-                                      maxHeight: 200,
-                                    ),
-                                    menuItemStyleData: const MenuItemStyleData(
-                                      height: 40,
-                                    ),
-                                    dropdownSearchData: DropdownSearchData(
-                                      searchController: controller.firstSkill,
-                                      searchInnerWidgetHeight: 50,
-                                      searchInnerWidget: Container(
-                                        height: 50,
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          bottom: 4,
-                                          right: 8,
-                                          left: 8,
-                                        ),
-                                        child: TextFormField(
-                                          expands: true,
-                                          maxLines: null,
-                                          controller: controller.firstSkill,
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 8,
-                                            ),
-                                            hintText: 'Search for an item...',
-                                            hintStyle:
-                                                const TextStyle(fontSize: 12),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      searchMatchFn: (item, searchValue) {
-                                        return item.value
-                                            .toString()
-                                            .contains(searchValue);
-                                      },
-                                    ),
-                                    //This to clear the search value when you close the menu
-                                    onMenuStateChange: (isOpen) {
-                                      if (!isOpen) {
-                                        controller.firstSkill.clear();
-                                      }
-                                    },
-                                  ),
-                                )),
-                          ),
-                          Container(
-                            width: 10.w,
-                            color: Colors.red,
-                          ),
-                          Container(
-                            width: 100.w,
-                            color: Colors.yellow,
-                          ),
-                        ],
+                      child: Obx(
+                        () => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildSearchDropDown(
+                                  140.w,
+                                  controller.firstSkill,
+                                  controller.firstSkillOption,
+                                  controller.selectedFirst,
+                                  (data) =>
+                                      controller.setCurrentFirstSkill(data)),
+                              _buildSearchDropDown(
+                                  140.w,
+                                  null,
+                                  controller.firstSkillsTri,
+                                  controller.selectedFirstTri,
+                                  (data) =>
+                                      controller.setCurrentFirstTri(data)),
+                            ]),
                       ),
                     ),
                     Expanded(
@@ -708,10 +628,25 @@ class AuctionScreen extends GetView<AuctionController> {
                     ),
                     Expanded(
                       flex: 5,
-                      child: Container(
-                        height: 44.h,
-                        color: Colors.blue,
-                      ),
+                      child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildSearchDropDown(
+                                  140.w,
+                                  controller.secondSkill,
+                                  controller.secondSkillOption,
+                                  controller.selectedSecond,
+                                  (data) =>
+                                      controller.setCurrentSecondSkill(data)),
+                              _buildSearchDropDown(
+                                  140.w,
+                                  null,
+                                  controller.secondSkillsTri,
+                                  controller.selectedSecondTri,
+                                  (data) =>
+                                      controller.setCurrentSecondTri(data)),
+                            ],
+                          )),
                     ),
                   ],
                 ),
@@ -719,5 +654,131 @@ class AuctionScreen extends GetView<AuctionController> {
         )
       ],
     );
+  }
+
+  Widget _buildSearchDropDown(
+      double width,
+      TextEditingController? text,
+      List<DropDownData>? list,
+      DropDownData? select,
+      Function(DropDownData data)? onChange) {
+    if (list == null) {
+      return const SizedBox();
+    }
+    return Expanded(
+        child: SizedBox(
+            height: 40.h,
+            width: width,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<dynamic>(
+                isExpanded: true,
+                iconStyleData: const IconStyleData(
+                    iconDisabledColor: Colors.grey,
+                    iconEnabledColor: Colors.white),
+                items: list
+                    .map((e) => [
+                          DropdownMenuItem(
+                            value: e,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Text(
+                                e.title,
+                                style: TextStyle(
+                                    color: onChange == null
+                                        ? Colors.grey
+                                        : e.titleColor ?? Colors.white,
+                                    fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          if (list.last != e)
+                            DropdownMenuItem(
+                              enabled: false,
+                              value: DropDownData.enable(),
+                              child: const Divider(),
+                            )
+                        ])
+                    .expand((x) => x)
+                    .toList(),
+                value: select,
+                onChanged: onChange == null ? null : (s) => onChange(s),
+                buttonStyleData: ButtonStyleData(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color:
+                                onChange == null ? Colors.grey : Colors.white),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4))),
+                    padding: const EdgeInsets.all(5).copyWith(left: 0),
+                    width: width,
+                    height: 44.h),
+                menuItemStyleData: MenuItemStyleData(
+                    height: 40.h,
+                    padding: const EdgeInsets.all(0),
+                    customHeights: list
+                        .map((e) => [40.h, if (list.last != e) 1.h])
+                        .expand((x) => x)
+                        .toList(),
+                    selectedMenuItemBuilder: (context, widget) => Container(
+                          color: Colors.white.withOpacity(0.3),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 2.h, vertical: 1.h),
+                          child: widget,
+                        )),
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 167.h,
+                  padding: const EdgeInsets.all(0).copyWith(top: 1),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(4),
+                          bottomLeft: Radius.circular(4))),
+                ),
+                dropdownSearchData: text == null
+                    ? null
+                    : DropdownSearchData(
+                        searchController: text,
+                        searchInnerWidgetHeight: 50,
+                        searchInnerWidget: Container(
+                          height: 50,
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 4,
+                            right: 8,
+                            left: 8,
+                          ),
+                          child: TextFormField(
+                            expands: true,
+                            maxLines: null,
+                            controller: text,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              hintText: 'Search for an item...',
+                              hintStyle: const TextStyle(
+                                  fontSize: 12, color: Colors.white),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        searchMatchFn: (item, searchValue) {
+                          return item.value.toString().contains(searchValue);
+                        },
+                      ),
+                onMenuStateChange: (text == null)
+                    ? (isOpen) {}
+                    : (isOpen) {
+                        if (!isOpen) {
+                          text.clear();
+                        }
+                      },
+              ),
+            )));
   }
 }
