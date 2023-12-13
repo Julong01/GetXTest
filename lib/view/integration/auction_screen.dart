@@ -94,7 +94,28 @@ class AuctionScreen extends GetView<AuctionController> {
                                     padding: EdgeInsets.all(10.h),
                                     child: _buildSkillsOption(
                                         constraints, controller.isSkills),
-                                  )))
+                                  ))),
+                          Obx(() => StackChild(
+                              top: !controller.isSkills
+                                  ? 245.h + 55.h
+                                  : 245.h + 190.h,
+                              start: 17.w,
+                              end: 17.w,
+                              height: !controller.isSkills ? 180.h : 45.h,
+                              duration: const Duration(milliseconds: 800),
+                              builder: (constraints) => Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: controller.isSkills
+                                                ? Colors.white
+                                                : Colors.grey),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5)),
+                                        color: Colors.black),
+                                    padding: EdgeInsets.all(10.h),
+                                    child: _buildSkillsOption(
+                                        constraints, controller.isSkills),
+                                  ))),
                         ],
                       ),
               ))),
@@ -540,8 +561,8 @@ class AuctionScreen extends GetView<AuctionController> {
                       ),
                       Icon(
                         !isSkills
-                            ? CupertinoIcons.arrowtriangle_down
-                            : CupertinoIcons.arrowtriangle_up,
+                            ? CupertinoIcons.arrowtriangle_up
+                            : CupertinoIcons.arrowtriangle_down,
                         size: 13,
                         color: !isSkills ? Colors.grey : Colors.white,
                       )
@@ -588,7 +609,7 @@ class AuctionScreen extends GetView<AuctionController> {
           height: 3.h,
         ),
         Expanded(
-          child: AnimatedContainer(
+          child: Obx(() => AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               width: constraints.maxWidth,
               height: isSkills ? 160.h : 0.h,
@@ -599,26 +620,26 @@ class AuctionScreen extends GetView<AuctionController> {
                   children: [
                     Expanded(
                       flex: 5,
-                      child: Obx(
-                        () => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildSearchDropDown(
-                                  140.w,
-                                  controller.firstSkill,
-                                  controller.firstSkillOption,
-                                  controller.selectedFirst,
-                                  (data) =>
-                                      controller.setCurrentFirstSkill(data)),
-                              _buildSearchDropDown(
-                                  140.w,
-                                  null,
-                                  controller.firstSkillsTri,
-                                  controller.selectedFirstTri,
-                                  (data) =>
-                                      controller.setCurrentFirstTri(data)),
-                            ]),
-                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildSearchDropDown(
+                                140.w,
+                                controller.firstSkill,
+                                controller.firstSkillOption,
+                                controller.selectedFirst,
+                                (data) =>
+                                    controller.setCurrentFirstSkill(data)),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            _buildSearchDropDown(
+                                140.w,
+                                null,
+                                controller.firstSkillsTri,
+                                controller.selectedFirstTri,
+                                (data) => controller.setCurrentFirstTri(data)),
+                          ]),
                     ),
                     Expanded(
                       flex: 1,
@@ -628,29 +649,30 @@ class AuctionScreen extends GetView<AuctionController> {
                     ),
                     Expanded(
                       flex: 5,
-                      child: Obx(() => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildSearchDropDown(
-                                  140.w,
-                                  controller.secondSkill,
-                                  controller.secondSkillOption,
-                                  controller.selectedSecond,
-                                  (data) =>
-                                      controller.setCurrentSecondSkill(data)),
-                              _buildSearchDropDown(
-                                  140.w,
-                                  null,
-                                  controller.secondSkillsTri,
-                                  controller.selectedSecondTri,
-                                  (data) =>
-                                      controller.setCurrentSecondTri(data)),
-                            ],
-                          )),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildSearchDropDown(
+                              140.w,
+                              controller.secondSkill,
+                              controller.secondSkillOption,
+                              controller.selectedSecond,
+                              (data) => controller.setCurrentSecondSkill(data)),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          _buildSearchDropDown(
+                              140.w,
+                              null,
+                              controller.secondSkillsTri,
+                              controller.selectedSecondTri,
+                              (data) => controller.setCurrentSecondTri(data)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              )),
+              ))),
         )
       ],
     );

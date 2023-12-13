@@ -49,8 +49,8 @@ class AuctionController extends GetxController
   @override
   void onInit() {
     // TODO: implement onInit
-    getOptions();
     super.onInit();
+    getOptions();
   }
 
   getOptions() async {
@@ -107,14 +107,13 @@ class AuctionController extends GetxController
 
   setCurrentClass(DropDownData cur) {
     _selectedClass!.value = cur;
-    _isSkills.value = ((_selectedCategory!.value.code >= 170300 &&
-            (selectedClass?.title ?? "전체") != "전체" &&
-            _selectedCategory!.value.code <= 190050) ||
-        _selectedCategory!.value.code == 10000 ||
-        _selectedCategory!.value.code == 210000);
-    if (cur.title != "전체") {
-      setSkillsOptions();
-    }
+    _isSkills.value = false;
+    _isSkills.value = ((selectedClass?.title ?? "전체") != "전체" &&
+        (_selectedCategory!.value.code <= 190050 ||
+            _selectedCategory!.value.code == 10000 ||
+            _selectedCategory!.value.code == 210000 ||
+            _selectedCategory!.value.code >= 170300));
+    setSkillsOptions();
   }
 
   setGrades() {
@@ -158,14 +157,13 @@ class AuctionController extends GetxController
   }
 
   setSkillsOptions() {
-    _firstSkillOption = [];
-    _firstSkillOption!.add(DropDownData("없음", null, null));
-    _secondSkillOption = [];
-    _secondSkillOption!.add(DropDownData("없음", null, null));
+    _firstSkillOption = [DropDownData("없음", null, null)].obs;
+    _secondSkillOption = [DropDownData("없음", null, null)].obs;
     _firstSkillTripod = [];
     _firstSkillTripod!.add(DropDownData("없음", null, null));
     _secondSkillTripod = [];
     _secondSkillTripod!.add(DropDownData("없음", null, null));
+
     if (selectedClass != null) {
       for (SkillOption skill in response.skillOptions) {
         if (skill.className == selectedClass!.title) {
@@ -175,11 +173,11 @@ class AuctionController extends GetxController
               .add(DropDownData(skill.content, skill.value, null));
         }
       }
-      _selectedFirst = _firstSkillOption!.first.obs;
-      _selectedSecond = _secondSkillOption!.first.obs;
-      _selectedFirstTri = _firstSkillTripod!.first.obs;
-      _selectedSecondTri = _secondSkillTripod!.first.obs;
     }
+    _selectedFirst = _firstSkillOption!.first.obs;
+    _selectedSecond = _secondSkillOption!.first.obs;
+    _selectedFirstTri = _firstSkillTripod!.first.obs;
+    _selectedSecondTri = _secondSkillTripod!.first.obs;
   }
 
   setCurrentFirstSkill(DropDownData cur) {
