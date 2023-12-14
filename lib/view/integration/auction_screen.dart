@@ -1,5 +1,6 @@
 import 'package:auction/controller/controllers.dart';
 import 'package:auction/view/widgets.dart';
+import 'package:collection/collection.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class AuctionScreen extends GetView<AuctionController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: true,
       floatingActionButton: SpeedDial(
         openCloseDial: controller.isDialOpen,
         onOpen: () {},
@@ -96,25 +98,25 @@ class AuctionScreen extends GetView<AuctionController> {
                                         constraints, controller.isSkills),
                                   ))),
                           Obx(() => StackChild(
-                              top: !controller.isSkills
-                                  ? 245.h + 55.h
-                                  : 245.h + 190.h,
+                              top: controller.isSkills
+                                  ? 245.h + 190.h
+                                  : 245.h + 55.h,
                               start: 17.w,
                               end: 17.w,
-                              height: !controller.isSkills ? 180.h : 45.h,
+                              height: controller.isEtc ? 270.h : 45.h,
                               duration: const Duration(milliseconds: 800),
                               builder: (constraints) => Container(
                                     decoration: BoxDecoration(
                                         border: Border.all(
-                                            color: controller.isSkills
+                                            color: controller.isEtc
                                                 ? Colors.white
                                                 : Colors.grey),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(5)),
                                         color: Colors.black),
                                     padding: EdgeInsets.all(10.h),
-                                    child: _buildSkillsOption(
-                                        constraints, controller.isSkills),
+                                    child: _buildEtcOption(
+                                        constraints, controller.isEtc),
                                   ))),
                         ],
                       ),
@@ -208,10 +210,87 @@ class AuctionScreen extends GetView<AuctionController> {
     );
   }
 
+  Widget _buildEtcDropDown(BoxConstraints constraints, List<DropDownData> list,
+      DropDownData select, Function(DropDownData data)? onChange) {
+    return Expanded(
+        flex: 8,
+        child: SizedBox(
+            height: 40.h,
+            width: constraints.maxWidth,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<dynamic>(
+                isExpanded: true,
+                iconStyleData: const IconStyleData(
+                    iconDisabledColor: Colors.grey,
+                    iconEnabledColor: Colors.white),
+                items: list
+                    .map((e) => [
+                          DropdownMenuItem(
+                            value: e,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Text(
+                                e.title,
+                                style: TextStyle(
+                                    color: onChange == null
+                                        ? Colors.grey
+                                        : e.titleColor ?? Colors.white,
+                                    fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          if (list.last != e)
+                            DropdownMenuItem(
+                              enabled: false,
+                              value: DropDownData.enable(),
+                              child: const Divider(),
+                            )
+                        ])
+                    .expand((x) => x)
+                    .toList(),
+                value: select,
+                onChanged: onChange == null ? null : (s) => onChange(s),
+                buttonStyleData: ButtonStyleData(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color:
+                                onChange == null ? Colors.grey : Colors.white),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4))),
+                    padding: const EdgeInsets.all(5).copyWith(left: 0),
+                    width: constraints.maxWidth,
+                    height: 44.h),
+                menuItemStyleData: MenuItemStyleData(
+                    height: 40.h,
+                    padding: const EdgeInsets.all(0),
+                    customHeights: list
+                        .map((e) => [40.h, if (list.last != e) 1.h])
+                        .expand((x) => x)
+                        .toList(),
+                    selectedMenuItemBuilder: (context, widget) => Container(
+                          color: Colors.white.withOpacity(0.3),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 2.h, vertical: 1.h),
+                          child: widget,
+                        )),
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 167.h,
+                  padding: const EdgeInsets.all(0).copyWith(top: 1),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(4),
+                          bottomLeft: Radius.circular(4))),
+                ),
+              ),
+            )));
+  }
+
   Widget _buildDropDown(
       BoxConstraints constraints,
-      String label,
-      IconData icons,
+      String? label,
+      IconData? icons,
       List<DropDownData> list,
       DropDownData select,
       Function(DropDownData data)? onChange) {
@@ -219,29 +298,31 @@ class AuctionScreen extends GetView<AuctionController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-              height: 20.h,
-              child: Row(
-                children: [
-                  AutoText(
-                    text: label,
-                    fontSizeSp: 12,
-                    style: TextStyle(
-                        color: onChange == null ? Colors.grey : Colors.white),
-                  ),
-                  SizedBox(
-                    width: 2.w,
-                  ),
-                  Icon(
-                    icons,
-                    size: 13,
-                    color: onChange == null ? Colors.grey : Colors.white,
-                  )
-                ],
-              )),
-          SizedBox(
-            height: 4.h,
-          ),
+          if (label != null || icons != null)
+            SizedBox(
+                height: 20.h,
+                child: Row(
+                  children: [
+                    AutoText(
+                      text: label,
+                      fontSizeSp: 12,
+                      style: TextStyle(
+                          color: onChange == null ? Colors.grey : Colors.white),
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    Icon(
+                      icons,
+                      size: 13,
+                      color: onChange == null ? Colors.grey : Colors.white,
+                    )
+                  ],
+                )),
+          if (label != null || icons != null)
+            SizedBox(
+              height: 4.h,
+            ),
           SizedBox(
               height: 40.h,
               width: constraints.maxWidth,
@@ -578,7 +659,7 @@ class AuctionScreen extends GetView<AuctionController> {
                           ),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4))),
-                      onTap: () => {},
+                      onTap: () => controller.setSkillsOptions(),
                       builder: (_) => Row(
                             children: [
                               SizedBox(
@@ -628,6 +709,7 @@ class AuctionScreen extends GetView<AuctionController> {
                                 controller.firstSkill,
                                 controller.firstSkillOption,
                                 controller.selectedFirst,
+                                1,
                                 (data) =>
                                     controller.setCurrentFirstSkill(data)),
                             SizedBox(
@@ -638,6 +720,7 @@ class AuctionScreen extends GetView<AuctionController> {
                                 null,
                                 controller.firstSkillsTri,
                                 controller.selectedFirstTri,
+                                1,
                                 (data) => controller.setCurrentFirstTri(data)),
                           ]),
                     ),
@@ -657,6 +740,7 @@ class AuctionScreen extends GetView<AuctionController> {
                               controller.secondSkill,
                               controller.secondSkillOption,
                               controller.selectedSecond,
+                              1,
                               (data) => controller.setCurrentSecondSkill(data)),
                           SizedBox(
                             width: 10.w,
@@ -666,6 +750,7 @@ class AuctionScreen extends GetView<AuctionController> {
                               null,
                               controller.secondSkillsTri,
                               controller.selectedSecondTri,
+                              1,
                               (data) => controller.setCurrentSecondTri(data)),
                         ],
                       ),
@@ -678,18 +763,249 @@ class AuctionScreen extends GetView<AuctionController> {
     );
   }
 
+  Widget _buildEtcOption(BoxConstraints constraints, bool isEtc) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 20.h,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                  width: 100.h,
+                  child: Row(
+                    children: [
+                      AutoText(
+                        text: "기타 상세 옵션",
+                        fontSizeSp: 12,
+                        style: TextStyle(
+                            color: !isEtc ? Colors.grey : Colors.white),
+                      ),
+                      SizedBox(
+                        width: 2.w,
+                      ),
+                      Icon(
+                        !isEtc
+                            ? CupertinoIcons.arrowtriangle_up
+                            : CupertinoIcons.arrowtriangle_down,
+                        size: 13,
+                        color: !isEtc ? Colors.grey : Colors.white,
+                      )
+                    ],
+                  )),
+              SizedBox(
+                  width: 100.h,
+                  height: 20.h,
+                  child: BaseWidget(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: !isEtc ? Colors.grey : Colors.white,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4))),
+                      onTap: () => controller.setEtcOptions(),
+                      builder: (_) => Row(
+                            children: [
+                              SizedBox(
+                                  height: 20.h,
+                                  width: 20.h,
+                                  child: Icon(
+                                    Icons.refresh_rounded,
+                                    color: !isEtc ? Colors.grey : Colors.white,
+                                    size: 18.h,
+                                  )),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              AutoText(
+                                text: "전체 되돌리기",
+                                fontSizeSp: 12,
+                                style: TextStyle(
+                                    color: !isEtc ? Colors.grey : Colors.white),
+                              ),
+                            ],
+                          ))),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 3.h,
+        ),
+        Expanded(
+          child: Obx(() => AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: constraints.maxWidth,
+              height: isEtc ? 247.h : 0.h,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: controller.etcOptions
+                        .mapIndexed((idx, etcOption) => [
+                              Expanded(
+                                flex: 10,
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildEtcDropDown(
+                                          BoxConstraints(maxWidth: 100.w),
+                                          etcOption!,
+                                          controller.selectedOption[idx]!,
+                                          (data) => controller
+                                              .setCurrentEtcOptions(data, idx)),
+                                      SizedBox(
+                                        width: 10.w,
+                                      ),
+                                      _buildSearchDropDown(
+                                        50.w,
+                                        TextEditingController(),
+                                        controller.etcOptionsSubs[idx],
+                                        controller.selectedOptionSub[idx]!,
+                                        10,
+                                        (data) => controller
+                                            .setCurrentEtcSubOptions(data, idx),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      SizedBox(
+                                        width: 45.w,
+                                        height: 35.h,
+                                        child: TextField(
+                                          controller:
+                                              controller.slotMinList[idx],
+                                          cursorColor: Colors.white,
+                                          textAlign: TextAlign.start,
+                                          cursorWidth: 1,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12),
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r'[0-9]]')),
+                                            LengthLimitingTextInputFormatter(3),
+                                          ],
+                                          onTapOutside: (event) {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          onSubmitted: (str) {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          onEditingComplete: () {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 15),
+                                              hintText: "min",
+                                              hintStyle: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xffdddddd)),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: isEtc ? 1 : 0,
+                                                    color: const Color(
+                                                        0xffeeeeee)),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: isEtc ? 1 : 0,
+                                                      color: Colors.white))),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      SizedBox(
+                                        width: 45.w,
+                                        height: 35.h,
+                                        child: TextField(
+                                          controller:
+                                              controller.slotMaxList[idx],
+                                          cursorColor: Colors.white,
+                                          textAlign: TextAlign.start,
+                                          cursorWidth: 1,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12),
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r'[0-9]]')),
+                                            LengthLimitingTextInputFormatter(3),
+                                          ],
+                                          onTapOutside: (event) {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          onSubmitted: (str) {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          onEditingComplete: () {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          },
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 15),
+                                              hintText: "max",
+                                              hintStyle: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xffdddddd)),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: isEtc ? 1 : 0,
+                                                  color:
+                                                      const Color(0xffeeeeee),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: isEtc ? 1 : 0,
+                                                      color: Colors.white))),
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              if (etcOption != controller.etcOptions.last)
+                                Expanded(
+                                  flex: 1,
+                                  child: SizedBox(
+                                    height: 10.h,
+                                  ),
+                                ),
+                            ])
+                        .expand((x) => x)
+                        .toList()),
+              ))),
+        )
+      ],
+    );
+  }
+
   Widget _buildSearchDropDown(
       double width,
       TextEditingController? text,
       List<DropDownData>? list,
       DropDownData? select,
+      int flex,
       Function(DropDownData data)? onChange) {
     if (list == null) {
       return const SizedBox();
     }
     return Expanded(
+        flex: flex,
         child: SizedBox(
-            height: 40.h,
+            height: 35.h,
             width: width,
             child: DropdownButtonHideUnderline(
               child: DropdownButton2<dynamic>(
@@ -774,6 +1090,8 @@ class AuctionScreen extends GetView<AuctionController> {
                             expands: true,
                             maxLines: null,
                             controller: text,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.white),
                             decoration: InputDecoration(
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(

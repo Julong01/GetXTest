@@ -14,9 +14,11 @@ class AuctionController extends GetxController
 
   final RxBool _isSkills = false.obs;
   final RxBool _isAccessories = false.obs;
+  final RxBool _isEtc = false.obs;
   final RxBool _isLoaded = false.obs;
 
   late final AuctionOptionResponse response;
+
   List<DropDownData>? _categoryList;
   Rx<DropDownData>? _selectedCategory;
   List<DropDownData>? _classList;
@@ -35,6 +37,29 @@ class AuctionController extends GetxController
   Rx<DropDownData>? _selectedSecond;
   List<DropDownData>? _secondSkillTripod;
   Rx<DropDownData>? _selectedSecondTri;
+
+  final RxList<List<DropDownData>?> _etcOptions = <List<DropDownData>>[].obs;
+  final RxList<DropDownData> _selectedOption = <DropDownData>[].obs;
+  final RxList<List<DropDownData>?> _etcOptionsSubs =
+      <List<DropDownData>>[].obs;
+  final RxList<DropDownData> _selectedOptionSub = <DropDownData>[].obs;
+
+  final RxList<TextEditingController> _slotMinList = [
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: "")
+  ].obs;
+
+  final RxList<TextEditingController> _slotMaxList = [
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: ""),
+    TextEditingController(text: "")
+  ].obs;
+
   final Rx<TextEditingController> _firstSkill =
       TextEditingController(text: "").obs;
   final Rx<TextEditingController> _secondSkill =
@@ -79,20 +104,26 @@ class AuctionController extends GetxController
 
   setCurrentCategory(DropDownData cur) {
     _selectedCategory!.value = cur;
-    _isSkills.value = ((_selectedCategory!.value.code >= 170300 &&
-            (selectedClass?.title ?? "전체") != "전체" &&
-            _selectedCategory!.value.code <= 190050) ||
+    _isSkills.value = ((selectedClass?.title ?? "전체") != "전체" &&
+            (_selectedCategory!.value.code <= 190050 &&
+                _selectedCategory!.value.code >= 170300) ||
         _selectedCategory!.value.code == 10000 ||
         _selectedCategory!.value.code == 210000);
     _isAccessories.value = (_selectedCategory!.value.code >= 200000 &&
         _selectedCategory!.value.code <= 200040);
-
+    _isEtc.value = (_selectedCategory!.value.code >= 200000 &&
+            _selectedCategory!.value.code <= 200040) ||
+        _selectedCategory!.value.code == 30000;
     if (!_isAccessories.value) {
       setCurrentQuality(_qualityList!.first);
     }
 
     if (_isSkills.value) {
       setSkillsOptions();
+    }
+
+    if (_isEtc.value) {
+      setEtcOptions();
     }
   }
 
@@ -109,10 +140,10 @@ class AuctionController extends GetxController
     _selectedClass!.value = cur;
     _isSkills.value = false;
     _isSkills.value = ((selectedClass?.title ?? "전체") != "전체" &&
-        (_selectedCategory!.value.code <= 190050 ||
-            _selectedCategory!.value.code == 10000 ||
-            _selectedCategory!.value.code == 210000 ||
-            _selectedCategory!.value.code >= 170300));
+            (_selectedCategory!.value.code <= 190050 &&
+                _selectedCategory!.value.code >= 170300) ||
+        _selectedCategory!.value.code == 10000 ||
+        _selectedCategory!.value.code == 210000);
     setSkillsOptions();
   }
 
@@ -156,6 +187,41 @@ class AuctionController extends GetxController
     _selectedItemTier!.value = cur;
   }
 
+  setEtcOptions() {
+    _etcOptions.clear();
+    _etcOptionsSubs.clear();
+    _selectedOption.clear();
+    _selectedOptionSub.clear();
+    for (int i = 0; i < 5; i++) {
+      _etcOptions.add([DropDownData("없음", null, null)].obs);
+      _etcOptionsSubs.add([DropDownData("없음", null, null)].obs);
+    }
+    for (EtcOption e in response.etcOptions) {
+      for (int i = 0; i < _etcOptions.length; i++) {
+        _etcOptions[i]!.add(DropDownData(e.content, e.value, null));
+      }
+    }
+    for (int i = 0; i < 5; i++) {
+      _selectedOption.add(_etcOptions[i]!.first);
+      _selectedOptionSub.add(_etcOptionsSubs[i]!.first);
+    }
+  }
+
+  setCurrentEtcOptions(DropDownData cur, int idx) {
+    _selectedOption[idx] = cur;
+    for (EtcOption e in response.etcOptions) {
+      if (e.value == cur.code) {
+        for (EtcSub s in e.etcSubs) {
+          _etcOptionsSubs[idx]!.add(DropDownData(s.content, s.value, null));
+        }
+      }
+    }
+  }
+
+  setCurrentEtcSubOptions(DropDownData cur, int idx) {
+    _selectedOptionSub[idx] = cur;
+  }
+
   setSkillsOptions() {
     _firstSkillOption = [DropDownData("없음", null, null)].obs;
     _secondSkillOption = [DropDownData("없음", null, null)].obs;
@@ -178,6 +244,8 @@ class AuctionController extends GetxController
     _selectedSecond = _secondSkillOption!.first.obs;
     _selectedFirstTri = _firstSkillTripod!.first.obs;
     _selectedSecondTri = _secondSkillTripod!.first.obs;
+    _isSkills.value = !_isSkills.value;
+    _isSkills.value = !_isSkills.value;
   }
 
   setCurrentFirstSkill(DropDownData cur) {
@@ -318,6 +386,11 @@ class AuctionController extends GetxController
 
   DropDownData? get selectedSecondTri => _selectedSecondTri?.value;
 
+  List<List<DropDownData>?> get etcOptions => _etcOptions;
+  List<List<DropDownData>?> get etcOptionsSubs => _etcOptionsSubs;
+  List<DropDownData?> get selectedOption => _selectedOption;
+  List<DropDownData?> get selectedOptionSub => _selectedOptionSub;
+
   TextEditingController get firstSkill => _firstSkill.value;
 
   TextEditingController get secondSkill => _secondSkill.value;
@@ -328,9 +401,15 @@ class AuctionController extends GetxController
 
   TextEditingController get itemMinLv => _itemMinLv.value;
 
+  List<TextEditingController> get slotMinList => _slotMinList;
+
+  List<TextEditingController> get slotMaxList => _slotMaxList;
+
   bool get isSkills => _isSkills.value;
 
   bool get isAccessories => _isAccessories.value;
+
+  bool get isEtc => _isEtc.value;
 
   bool get isLoaded => _isLoaded.value;
 }
