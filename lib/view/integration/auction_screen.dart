@@ -82,7 +82,7 @@ class AuctionScreen extends GetView<AuctionController> {
                               top: 245.h,
                               start: 17.w,
                               end: 17.w,
-                              height: controller.isSkills ? 180.h : 45.h,
+                              height: controller.isSkills ? 140.h : 45.h,
                               duration: const Duration(milliseconds: 800),
                               builder: (constraints) => Container(
                                     decoration: BoxDecoration(
@@ -99,7 +99,7 @@ class AuctionScreen extends GetView<AuctionController> {
                                   ))),
                           Obx(() => StackChild(
                               top: controller.isSkills
-                                  ? 245.h + 190.h
+                                  ? 245.h + 150.h
                                   : 245.h + 55.h,
                               start: 17.w,
                               end: 17.w,
@@ -693,9 +693,10 @@ class AuctionScreen extends GetView<AuctionController> {
           child: Obx(() => AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               width: constraints.maxWidth,
-              height: isSkills ? 160.h : 0.h,
+              height: isSkills ? 140.h : 0.h,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
+                padding:
+                    EdgeInsets.symmetric(vertical: 10.h).copyWith(bottom: 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
